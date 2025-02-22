@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 const { connectDB, NoteCollection } = require("./dbConfig");
-const { saveFile, ensureDirectoryExists } = require("./noteService");
+const { saveFile, ensureDirectoryExists } = require("./noteFunctions");
 const { generateTFQuestions, generateSQSAQuestions, evaluate_question } = require("./aiFunctions");
 connectDB();
 ensureDirectoryExists();

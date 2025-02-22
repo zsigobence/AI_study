@@ -4,6 +4,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const pdfParse = require("pdf-parse");
+const multer = require("multer");
 const PORT = 3000;
 app.use(express.json());
 app.use(cors());
@@ -13,7 +14,18 @@ const { generateTFQuestions, generateSQSAQuestions, evaluate_question } = requir
 connectDB();
 ensureDirectoryExists();
 
-//fájl feltöltés
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "notes"); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname); 
+  },
+});
+
+const upload = multer({ storage: storage });
+
+
 app.post("/upload", upload.single("pdf"), async (req, res) => {
   const subjectName = req.body;
   const fileName = req.file.originalname;
@@ -103,7 +115,7 @@ async function processPdf(data){
   const subject = data.subject;
   const note = data.note;
   if (subject != "") {
-    const pdfPath = path.join(uploadDir, note);
+    const pdfPath = path.join("notes", note);
     const data = await pdfParse(fs.readFileSync(pdfPath));
     const text = data.text;
   } else {
@@ -115,7 +127,7 @@ async function processPdf(data){
     for (const title of titles) {
       for (const title of titles) {
         if(title != ""){
-        pdfPath = path.join(uploadDir, title);
+        pdfPath = path.join("notes", title);
         data = await pdfParse(fs.readFileSync(pdfPath));
         text += data.text;
         }

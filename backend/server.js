@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     cb(null, "notes"); 
   },
   filename: (req, file, cb) => {
-    cb(file.originalname); 
+    cb(null, file.originalname); 
   },
 });
 

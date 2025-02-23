@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     cb(null, "notes"); // A fájlok a "notes" mappába kerülnek
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, Date.now() + "-" + file.originalname); 
   },
 });
 

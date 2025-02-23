@@ -46,12 +46,12 @@ app.get("/generate_questions", async (req, res) => {
     const subject = req.query.subject; //tantárgy neve
     const note = req.query.note || ""; //jegyzet neve
 
-    const text = processPdf(req.query);
+    const text = await processPdf(req.query);
 
-    if (type == "TF") {
-      const array = generateTFQuestions(req.query, text);
-    } else if (type == "SQSA") {
-      const array = generateSQSAQuestions(req.query, text);
+    if (type === "TF") {
+      const array = await generateTFQuestions(req.query, text);
+    } else if (type === "SQSA") {
+      const array = await generateSQSAQuestions(req.query, text);
     } else {
       res.status(400).json({ error: "Not valid question type" });
     }
@@ -82,8 +82,8 @@ app.get("/notes_data", async (req, res) => {
   answer
 */
 app.get("/evaluate_question", async (req, res) => {
-const text = processPdf(req.query);
-const array = evaluate_question(req.query,text)
+const text = await processPdf(req.query);
+const array = await evaluate_question(req.query,text)
 res.json(array);
 });
 

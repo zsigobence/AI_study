@@ -1,0 +1,11 @@
+<h2>Jegyzet feltöltése</h2>
+<form (submit)="upload()">
+  <label for="subject">Tantárgy neve:</label>
+  <input type="text" id="subject" [(ngModel)]="subject" name="subject" required>
+
+
+  <label for="file">Válassz PDF fájlt:</label>
+  <input type="file" id="file" (change)="onFileSelected($event)" required>
+
+  <button type="submit">Feltöltés</button>
+</form>

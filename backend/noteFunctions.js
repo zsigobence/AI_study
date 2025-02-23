@@ -1,28 +1,37 @@
 const path = require("path");
 const fs = require("fs");
+
 const uploadDir = path.join(__dirname, "notes");
 
+// Mappa létrehozása, ha nem létezik
 function ensureDirectoryExists() {
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
+    console.log(` Mappa létrehozva: ${uploadDir}`);
   }
 }
 
-function saveFile(data) {
-  if (!data) {
-    return res.status(400).json({ message: "Nincs fájl feltöltve" });
+// Fájl mentése a "notes" mappába
+function saveFile(file) {
+  if (!file || !file.buffer) {
+    console.error("Hiba: A fájl buffer nem létezik vagy üres.");
+    return { success: false, message: "A fájl adatai nem érhetők el." };
   }
 
-  const filePath = path.join(uploadDir, data.originalname);
+  console.log("📁 Fájl buffer tartalom:", file.buffer);
 
-  fs.writeFile(filePath, data.buffer, (err) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "Hiba történt a fájl mentésekor" });
-    }
-    res.status(200).json({ message: "Fájl sikeresen feltöltve", filePath });
-  });
+  const fileBuffer = file.buffer ? file.buffer : Buffer.from([]);
+const filePath = path.join(uploadDir, file.originalname);
+
+try {
+  fs.writeFileSync(filePath, fileBuffer);
+  console.log(`Fájl sikeresen mentve: ${filePath}`);
+  return { success: true, filePath };
+} catch (err) {
+  console.error("Hiba történt a fájl mentésekor:", err);
+  return { success: false, message: "Hiba történt a fájl mentésekor." };
+}
+
 }
 
 module.exports = { saveFile, ensureDirectoryExists };

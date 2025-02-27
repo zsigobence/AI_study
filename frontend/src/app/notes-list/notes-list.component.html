@@ -1,0 +1,12 @@
+<div *ngIf="notes.length > 0">
+  <h3>Jegyzetek</h3>
+  <ul>
+    <li *ngFor="let note of notes">
+      {{ note.title }} ({{ note.subject }})
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="notes.length === 0">
+  <p>Nincsenek jegyzetek.</p>
+</div>

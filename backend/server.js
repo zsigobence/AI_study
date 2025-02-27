@@ -16,7 +16,7 @@ ensureDirectoryExists();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "notes"); 
+    cb(null, "notes"); // A fájlok a "notes" mappába kerülnek
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname); 
@@ -25,20 +25,33 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
 app.post("/upload", upload.single("pdf"), async (req, res) => {
-  const subjectName = req.body;
-  const fileName = req.file.originalname;
-  const note = await NoteCollection.findOne({ fileName });
-  if (note) {
-    return res.status(400).json({ message: "Ilyen nevű jegyzet már létezik" });
+  if (!req.file) {
+    return res.status(400).json({ message: "Nincs feltöltött fájl!" });
   }
-  saveFile(req.file);
-  const newNote = new NoteCollection({ title: fileName, subject: subjectName, questions: [] });
-  await newNote.save();
+
+  console.log("Feltöltött fájl:", req.file);
+
+  const subjectName = req.body.subject;
+
+  const newNote = new NoteCollection({
+    title: req.file.originalname,
+    subject: subjectName,
+    filePath: req.file.path,
+    filename: req.file.filename,
+    size: req.file.size,
+    questions: [],
+  });
+
+  try {
+    await newNote.save(); // Adatbázisba mentés
+    res.status(200).json({ message: "Fájl sikeresen feltöltve és mentve az adatbázisba!" });
+  } catch (err) {
+    console.error("Hiba történt az adatbázis mentés közben:", err);
+    res.status(500).json({ message: "Hiba történt az adatbázis mentés közben!" });
+  }
 });
 
-//szüksége van a length,type subject és note adatokra
 app.get("/generate_questions", async (req, res) => {
   try {
     //const length = req.query.length; //kérdések hossza
@@ -110,32 +123,40 @@ app.post("/save_questions", async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend is working!');
+});
 
-async function processPdf(data){
+
+
+const fsPromises = require("fs").promises;
+
+async function processPdf(data) {
   const subject = data.subject;
   const note = data.note;
+  let text = "";
+
   if (subject != "") {
     const pdfPath = path.join("notes", note);
-    const data = await pdfParse(fs.readFileSync(pdfPath));
-    const text = data.text;
-  } else {
-    const notes = await NoteCollection.find({ subject });
-    const titles = notes.map((note) => note.title);
-    let text = "";
-    let data = null;
-    let pdfPath = null;
-    for (const title of titles) {
-      for (const title of titles) {
-        if(title != ""){
-        pdfPath = path.join("notes", title);
-        data = await pdfParse(fs.readFileSync(pdfPath));
-        text += data.text;
-        }
-      }
+    
+    try {
+      await fsPromises.access(pdfPath);
+    } catch (error) {
+      console.log(`A fájl nem található: ${pdfPath}`);
+      return res.status(400).json({ message: "Fájl nem található!" });
+    }
+
+    try {
+      const data = await pdfParse(await fsPromises.readFile(pdfPath));
+      text = data.text;
+    } catch (error) {
+      console.error("Hiba a fájl feldolgozása közben:", error);
     }
   }
+
   return text;
 }
+
 
 app.listen(PORT, () => {
   console.log(`Szerver fut a http://localhost:${PORT} címen`);

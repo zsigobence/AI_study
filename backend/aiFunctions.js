@@ -39,14 +39,9 @@ async function generateSQSAQuestions(data, text) {
 
 
 async function evaluate_question(data, text) {
-  const prompt = `Generálj ${data.length} darab rövid válaszos kérdést a következő jegyzetből:\n${text} 
-  A kérdések az anyag legfontosabb témaköreit érintsék
-  javascript által értelmezhető tömb formátumba írd le a kérdéseket
-  például: ["kérdés1", "kérdés2",...]
-  ne írj semmilyen más megjegyzést és egyéb dolgot a tömbön kívül
-
+  const prompt = `
   Erre a kérdésre ${data.question} megfelelő-e ez a válasz ${data.answer} a jegyzet alapján\n ${text}.\n
-  javascript által értelmezhető tömb formátumba írd le a kiértékelésket
+  javascript által értelmezhető tömb formátumba írd le a kiértékeléseket
   A válasz helyességét és a javítást ha szükséges egy tömbben add vissza
   például: ["IGAZ", ""] vagy ha hamis akkor ["HAMIS", Azért hamis mert kihagytad a....]
   ne írj semmilyen más megjegyzést és egyéb dolgot a tömbön kívül

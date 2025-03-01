@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const pdfParse = require("pdf-parse");
 const multer = require("multer");
+app.use("/notes", express.static(path.join(__dirname, "notes")));
 const PORT = 3000;
 app.use(express.json());
 app.use(cors());
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
     cb(null, "notes"); // A fájlok a "notes" mappába kerülnek
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname); 
+    cb(null, file.originalname);
   },
 });
 
@@ -52,6 +53,75 @@ app.post("/upload", upload.single("pdf"), async (req, res) => {
   }
 });
 
+app.get("/notes", async (req, res) => {
+  try {
+    const notes = await NoteCollection.find({});
+    res.json({ success: true, notes });
+  } catch (error) {
+    console.error("Hiba a jegyzetek lekérdezésekor:", error);
+    res.status(500).json({ success: false, message: "Nem sikerült lekérdezni a jegyzeteket" });
+  }
+});
+
+app.delete("/notes/:noteTitle", async (req, res) => {
+  const noteTitle = req.params.noteTitle;
+
+  if (!noteTitle) {
+    return res.status(400).json({ error: "Jegyzet neve szükséges!" });
+  }
+
+  try {
+    // 1️⃣ Adatbázisból törlés
+    const deletedNote = await NoteCollection.findOneAndDelete({ title: noteTitle });
+
+    if (!deletedNote) {
+      return res.status(404).json({ error: "Jegyzet nem található az adatbázisban!" });
+    }
+
+    //Fájl törlése a szerverről
+    const filePath = path.join(__dirname, "notes", noteTitle);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log(`Fájl törölve: ${filePath}`);
+    } else {
+      console.log(`Fájl nem található: ${filePath}`);
+    }
+
+    res.json({ message: "Jegyzet sikeresen törölve!" });
+  } catch (error) {
+    console.error("Szerverhiba törlés közben:", error);
+    res.status(500).json({ error: "Szerverhiba a törlés közben!" });
+  }
+});
+
+
+app.get("/view_note", async (req, res) => {
+  const { fileName } = req.query;
+
+  if (!fileName) {
+    return res.status(400).json({ success: false, message: "Hiányzó fájlnév!" });
+  }
+
+  try {
+    const filePath = path.join(__dirname, "notes", fileName);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, message: "Fájl nem található!" });
+    }
+
+    const pdfBuffer = await fs.promises.readFile(filePath);
+    const data = await pdfParse(pdfBuffer);
+
+    res.json({ success: true, text: data.text });
+  } catch (error) {
+    console.error("Hiba a fájl megnyitásakor:", error);
+    res.status(500).json({ success: false, message: "Nem sikerült megnyitni a jegyzetet" });
+  }
+});
+
+
+
+
 app.get("/generate_questions", async (req, res) => {
   try {
     //const length = req.query.length; //kérdések hossza
@@ -60,16 +130,16 @@ app.get("/generate_questions", async (req, res) => {
     const note = req.query.note || ""; //jegyzet neve
 
     const text = await processPdf(req.query);
-
+    let questions
     if (type === "TF") {
-      const array = await generateTFQuestions(req.query, text);
+      questions = await generateTFQuestions(req.query, text);
     } else if (type === "SQSA") {
-      const array = await generateSQSAQuestions(req.query, text);
+      questions = await generateSQSAQuestions(req.query, text);
     } else {
       res.status(400).json({ error: "Not valid question type" });
     }
 
-    res.json(array);
+    res.json(questions);
   } catch (error) {
     console.error("Error generating questions:", error);
     res.status(500).json({ error: "Failed to generate questions" });

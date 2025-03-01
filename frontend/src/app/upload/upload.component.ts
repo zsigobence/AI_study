@@ -20,7 +20,6 @@ export class UploadComponent implements OnInit {
     this.loadNotes();
   }
 
-  // 📌 Jegyzetek betöltése
   loadNotes(): void {
     this.apiService.getNotes().subscribe(
       (response) => {
@@ -32,19 +31,17 @@ export class UploadComponent implements OnInit {
     );
   }
 
-  // 📌 Fájl kiválasztása
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
 
-  // 📌 Fájl feltöltése
   upload() {
     if (this.selectedFile && this.subject) {
       this.apiService.uploadNote(this.selectedFile, this.subject).subscribe(
         (response) => {
           console.log("Feltöltés sikeres!", response);
           alert("Jegyzet sikeresen feltöltve!");
-          this.loadNotes(); // Frissítjük a listát
+          this.loadNotes();
         },
         (error) => {
           console.error("Hiba történt!", error);
@@ -56,7 +53,6 @@ export class UploadComponent implements OnInit {
     }
   }
 
-  // 📌 Jegyzet törlése
   deleteNote(fileName: string) {
     if (confirm(`Biztos törölni szeretnéd: ${fileName}?`)) {
       this.apiService.deleteNote(fileName).subscribe(
@@ -72,7 +68,6 @@ export class UploadComponent implements OnInit {
     }
   }
 
-  // 📌 Jegyzet megtekintése
   viewNote(fileName: string) {
     window.open(this.apiService.getNoteFile(fileName), "_blank");
   }

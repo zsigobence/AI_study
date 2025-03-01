@@ -78,18 +78,18 @@ app.delete("/notes/:noteTitle", async (req, res) => {
       return res.status(404).json({ error: "Jegyzet nem található az adatbázisban!" });
     }
 
-    // 2️⃣ Fájl törlése a szerverről
+    //Fájl törlése a szerverről
     const filePath = path.join(__dirname, "notes", noteTitle);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
-      console.log(`✅ Fájl törölve: ${filePath}`);
+      console.log(`Fájl törölve: ${filePath}`);
     } else {
-      console.log(`⚠️ Fájl nem található: ${filePath}`);
+      console.log(`Fájl nem található: ${filePath}`);
     }
 
     res.json({ message: "Jegyzet sikeresen törölve!" });
   } catch (error) {
-    console.error("❌ Szerverhiba törlés közben:", error);
+    console.error("Szerverhiba törlés közben:", error);
     res.status(500).json({ error: "Szerverhiba a törlés közben!" });
   }
 });

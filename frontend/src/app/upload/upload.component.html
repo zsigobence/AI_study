@@ -1,11 +1,21 @@
-<h2>Jegyzet feltöltése</h2>
-<form (submit)="upload()">
-  <label for="subject">Tantárgy neve:</label>
-  <input type="text" id="subject" [(ngModel)]="subject" name="subject" required>
+<h2>Jegyzetek kezelése</h2>
 
+<!-- Feltöltés -->
+<div>
+  <input type="text" placeholder="Tantárgy neve" [(ngModel)]="subject">
+  <input type="file" (change)="onFileSelected($event)">
+  <button (click)="upload()">Feltöltés</button>
+</div>
 
-  <label for="file">Válassz PDF fájlt:</label>
-  <input type="file" id="file" (change)="onFileSelected($event)" required>
+<hr>
 
-  <button type="submit">Feltöltés</button>
-</form>
+<!-- Jegyzetek listázása -->
+<h3>Feltöltött jegyzetek:</h3>
+<ul>
+  <li *ngFor="let note of notes">
+    {{ note.title }} ({{ note.subject }})
+    <button (click)="viewNote(note.title)">📄 Megnyitás</button>
+    <button (click)="deleteNote(note.title)">🗑️ Törlés</button>
+  </li>
+</ul>
+ 

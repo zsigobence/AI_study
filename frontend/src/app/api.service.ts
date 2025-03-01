@@ -6,22 +6,31 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+  private API_URL = 'http://localhost:3000';  // Backend URL
 
-  private apiUrl = 'http://localhost:3000';
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getNotesData(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/notes_data`);
+  // 📌 Jegyzetek lekérdezése
+  getNotes(): Observable<any> {
+    return this.http.get(`${this.API_URL}/notes_data`);
   }
 
+  // 📌 Jegyzet feltöltése (PDF)
   uploadNote(file: File, subject: string): Observable<any> {
     const formData = new FormData();
-    formData.append("pdf", file);
-    formData.append("subject", subject);
-  
-    return this.http.post('http://localhost:3000/upload', formData);
+    formData.append('pdf', file);
+    formData.append('subject', subject);
+    return this.http.post(`${this.API_URL}/upload`, formData);
+  }
+
+  // 📌 Jegyzet törlése
+  deleteNote(fileName: string) {
+    return this.http.delete(`http://localhost:3000/notes/${fileName}`);
   }
   
-  
+
+  // 📌 Jegyzet megtekintése (visszaadja a fájl elérési útját)
+  getNoteFile(fileName: string): string {
+    return `${this.API_URL}/notes/${fileName}`; // Ez egy statikus útvonal lehet a backendben
+  }
 }

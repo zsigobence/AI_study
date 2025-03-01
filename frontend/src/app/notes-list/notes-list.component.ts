@@ -4,26 +4,11 @@ import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-notes-list',
-  imports: [NgIf, NgFor],
   templateUrl: './notes-list.component.html',
   styleUrls: ['./notes-list.component.css']
 })
-export class NotesListComponent implements OnInit {
+export class NotesListComponent {
 
-  notes: any[] = [];
 
-  constructor(private apiService: ApiService) { }
-
-  ngOnInit(): void {
-    this.apiService.getNotesData().subscribe(
-      (data: any) => {
-        console.log(data);
-        this.notes = data.data;
-      },
-      (error) => {
-        console.error('Hiba történt a jegyzetek lekérése közben:', error);
-      }
-    );
-  }
 
 }

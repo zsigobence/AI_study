@@ -18,7 +18,13 @@ async function generateTFQuestions(data, text) {
     .replace(/```javascript/, "")
     .replace(/```/, "")
     .trim();
-  return JSON.parse(cleanedText);
+  const parsedQuestions = JSON.parse(cleanedText);
+
+  if (parsedQuestions.length > data.length) {
+    return getRandomSubarray(parsedQuestions, data.length);
+  }
+
+  return parsedQuestions;
 }
 
 async function generateSQSAQuestions(data, text) {
@@ -34,7 +40,13 @@ async function generateSQSAQuestions(data, text) {
     .replace(/```javascript/, "")
     .replace(/```/, "")
     .trim();
-  return JSON.parse(cleanedText);
+  const parsedQuestions = JSON.parse(cleanedText);
+
+  if (parsedQuestions.length > data.length) {
+    return getRandomSubarray(parsedQuestions, data.length);
+  }
+
+  return parsedQuestions;
 }
 
 
@@ -52,7 +64,24 @@ const cleanedText = questions
     .replace(/```javascript/, "")
     .replace(/```/, "")
     .trim();
-  return JSON.parse(cleanedText);
+  const parsedQuestions = JSON.parse(cleanedText);
+
+  if (parsedQuestions.length > data.length) {
+    return getRandomSubarray(parsedQuestions, data.length);
+  }
+
+  return parsedQuestions;
+}
+
+
+function getRandomSubarray(arr, size) {
+  const shuffled = arr.slice(); 
+  let i = arr.length;
+  while (i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; 
+  }
+  return shuffled.slice(0, size); 
 }
 
 module.exports = { generateTFQuestions, generateSQSAQuestions, evaluate_question };

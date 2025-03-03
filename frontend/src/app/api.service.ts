@@ -32,4 +32,16 @@ export class ApiService {
   getNoteFile(fileName: string): string {
     return `${this.API_URL}/notes/${fileName}`; 
   }
+
+
+  generateQuestions(length: number,type: string, subject: string, note?: string): Observable<any> {
+    const params = {
+      length: length,
+      type: type,
+      subject: subject,
+      note: note || '' 
+    };
+  
+    return this.http.get(`${this.API_URL}/generate_questions`, { params: params });
+  }
 }

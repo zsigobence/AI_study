@@ -1,0 +1,17 @@
+<div>
+    <h2>Kérdések listája</h2>
+  
+    <div *ngIf="questions.length > 0">
+      <ul>
+        <li *ngFor="let question of questions">
+          <p><strong>Kérdés:</strong> {{ question[0] }}</p>
+          <p><strong>Válasz:</strong> {{ question[1] }}</p>
+        </li>
+      </ul>
+    </div>
+  
+    <div *ngIf="questions.length === 0">
+      <p>Nincsenek kérdések a választott jegyzethez!</p>
+    </div>
+  </div>
+  

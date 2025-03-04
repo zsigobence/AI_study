@@ -86,24 +86,38 @@ export class UploadComponent implements OnInit {
     window.open(this.apiService.getNoteFile(fileName), "_blank");
   }
 
-  generate(){
+  generate() {
     if (this.selectedLength && this.selectedType && this.selectedSubject) {
-      this.apiService.generateQuestions(this.selectedLength, this.selectedType, this.selectedSubject, this.selectedNote).subscribe(
-        (response) => {
-          console.log(response);
-          alert("Generálás sikeres!");
-          this.router.navigate(['/questions']);
-        },
-        (error) => {
-          console.error("Hiba történt!", error);
-          alert("Hiba történt a generálás során. Próbálja újra!");
-        }
-      );
+      this.apiService.generateQuestions(this.selectedLength, this.selectedType, this.selectedSubject, this.selectedNote)
+        .subscribe(
+          (response) => {
+            console.log("Generált kérdések:", response);
+            alert("Generálás sikeres!");
+  
+            // ⬇️ A generált kérdések mentése az adatbázisba
+            this.apiService.saveQuestions(this.selectedSubject, this.selectedNote, response).subscribe(
+              () => {
+                alert("Kérdések sikeresen mentve az adatbázisba!");
+                this.router.navigate(['/questions']);
+              },
+              (error) => {
+                console.error("Hiba történt a kérdések mentésekor:", error);
+                alert("Hiba történt a mentés során.");
+              }
+            );
+  
+          },
+          (error) => {
+            console.error("Hiba történt!", error);
+            alert("Hiba történt a generálás során. Próbálja újra!");
+          }
+        );
     } else {
       alert("Adj meg egy típust és válassz egy fájlt!");
     }
   }
-
+  
+  
   getUniqueSubjects(): string[] {
     return [...new Set(this.notes.map(note => note.subject))];
   }

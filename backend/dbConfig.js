@@ -37,9 +37,7 @@ const noteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  questions:{
-    type: [String]
-  }
+  questions: { type: Array, default: [] }
 });
 
 const UserCollection = mongoose.model('User', userSchema);

@@ -44,4 +44,21 @@ export class ApiService {
   
     return this.http.get(`${this.API_URL}/generate_questions`, { params: params });
   }
+
+  saveQuestions(subject: string, note: string, newQuestions: any[]): Observable<any> {
+    return this.http.post(`${this.API_URL}/save_questions`, {
+      subject: subject,
+      note: note,
+      newQuestions: newQuestions
+    });
+  }
+  
+  getQuestionsById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/get_questions?id=${id}`);
+  }
 }
+  
+
+
+
+

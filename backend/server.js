@@ -71,7 +71,6 @@ app.delete("/notes/:noteTitle", async (req, res) => {
   }
 
   try {
-    // 1️⃣ Adatbázisból törlés
     const deletedNote = await NoteCollection.findOneAndDelete({ title: noteTitle });
 
     if (!deletedNote) {
@@ -157,6 +156,27 @@ app.get("/notes_data", async (req, res) => {
     });
 });
 
+//ID alapján visszaadja a jegyzet kérdéseit
+app.get("/get_questions", async (req, res) => {
+  const { id } = req.query; 
+
+  try {
+    const noteData = await NoteCollection.findById(id);
+
+    if (!noteData || !noteData.questions || noteData.questions.length === 0) {
+      return res.status(404).json({ error: "Nincsenek mentett kérdések!" });
+    }
+
+    res.json({ questions: noteData.questions });
+  } catch (error) {
+    console.error("Hiba a lekérdezés során:", error);
+    res.status(500).json({ error: "Szerverhiba kérdések lekérése közben!" });
+  }
+});
+
+
+
+
 //szükséges paraméterek tantárgy , jegyzet (nem kötelező), kérdés, válasz
 /*
   subject
@@ -172,26 +192,29 @@ res.json(array);
 
 //kérdések mentése
 app.post("/save_questions", async (req, res) => {
-  const subject = req.body.subject;
-  const note = req.body.note || "";
-  const newQuestions = req.body.newQuestions //az elmentendő kérdések tömbje
-  if(note != ""){
-    const noteData = await NoteCollection.findOne({ title: note });
-    noteData.questions = noteData.questions.concat(newQuestions);
+  const { subject, note, newQuestions } = req.body;
 
-    noteData.save()
+  if (!subject || !newQuestions || !Array.isArray(newQuestions)) {
+    return res.status(400).json({ error: "Hiányzó adatok vagy rossz formátum!" });
   }
-  else{
-    const noteData = await NoteCollection.findOne({ subject: subject, title: "" });
-    if (noteData) {
-      noteData.questions = noteData.questions.concat(newQuestions); 
-      noteData.save()
-    }else{
-      const newNote = new NoteCollection({ title: "", subject: subject, questions: newQuestions });
-      await newNote.save();
+
+  try {
+    let noteData = await NoteCollection.findOne({ subject: subject, title: note });
+
+    if (!noteData) {
+      noteData = new NoteCollection({ title: note, subject: subject, questions: newQuestions });
+    } else {
+      noteData.questions = newQuestions;
     }
+
+    await noteData.save();
+    res.json({ success: true, message: "Kérdések sikeresen mentve!" });
+  } catch (error) {
+    console.error("Hiba a mentés során:", error);
+    res.status(500).json({ error: "Szerverhiba kérdés mentése közben!" });
   }
 });
+
 
 app.get('/', (req, res) => {
   res.send('Backend is working!');

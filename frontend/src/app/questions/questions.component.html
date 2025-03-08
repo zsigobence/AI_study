@@ -1,0 +1,23 @@
+<div>
+    <h2>Kérdések listája</h2>
+  
+    <div *ngIf="questions.length > 0">
+      <div *ngFor="let question of questions" class="question-card">
+        <div class="question-card-header">
+          <p class="question-title">{{ question[0] }}</p>
+          <button (click)="question.showAnswer = !question.showAnswer" class="toggle-btn">
+            {{ question.showAnswer ? 'Rejtés' : 'Mutatás' }}
+          </button>
+        </div>
+        
+        <div *ngIf="question.showAnswer" class="question-card-body">
+          <p><strong>Válasz:</strong> {{ question[1] }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="questions.length === 0">
+      <p>Nincsenek kérdések a választott jegyzethez!</p>
+    </div>
+  </div>
+  

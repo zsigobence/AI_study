@@ -4,8 +4,33 @@ import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'questions',
+  imports: [NgFor, NgIf],
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.css']
 })
 export class QuestionsComponent {
+  id: string = ''; // meg lesz csinálva csak kipróbáltam beégetéssel
+  questions: any[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.getQuestions();
+  }
+
+  getQuestions(): void {
+    this.apiService.getQuestionsById(this.id).subscribe(
+      (response) => {
+        if (response.questions && response.questions.length > 0) {
+          this.questions = response.questions;
+        } else {
+          console.log('Nincsenek kérdések!');
+        }
+      },
+      (error) => {
+        console.error('Hiba történt a kérdések lekérésekor:', error);
+      }
+    );
+  }
+
 }

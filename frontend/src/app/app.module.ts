@@ -7,19 +7,22 @@ import { ApiService } from './api.service';
 import { CommonModule } from '@angular/common';
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NotesListComponent
+    NotesListComponent,
+    HeaderComponent
+    
   ],
   imports: [
     BrowserModule,
     CommonModule,
     NgFor,
     HttpClientModule,
-    FormsModule
+    FormsModule,
     
   ],
   providers: [ApiService],

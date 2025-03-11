@@ -53,14 +53,13 @@ export class ApiService {
     });
   }
   
-  getQuestionsById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/get_questions?id=${id}`);
+  getQuestions(): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/get_questions`);
   }
 
 
-  getAnswer(id: string, question: string, answer: string): Observable<any> {
+  getAnswer( question: string, answer: string): Observable<any> {
     const params = {
-      id: id,
       question: question,
       answer: answer
     };

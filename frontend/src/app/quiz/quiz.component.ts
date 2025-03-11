@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class QuizComponent implements OnInit {
 
-  id: string = '67c81db18d07329ed749679e';//beégetés kiszedése folyamatban...
   questions: any[] = [];
   currentQuestionIndex: number = 0;
   correctAnswer: string = '';
@@ -30,7 +29,7 @@ export class QuizComponent implements OnInit {
   }
 
   getQuestions(): void {
-    this.apiService.getQuestionsById(this.id).subscribe(
+    this.apiService.getQuestions().subscribe(
       (response) => {
         if (response.questions && response.questions.length > 0) {
           if (response.questions[0].length == 2){
@@ -90,7 +89,6 @@ export class QuizComponent implements OnInit {
       this.score++;
     }
 
-    setTimeout(() => this.nextQuestion(), 2000);
   }
 
   answerSQSAQuestion(): void {
@@ -99,7 +97,7 @@ export class QuizComponent implements OnInit {
     clearInterval(this.timer);
     this.answerRevealed = true;
     this.correctAnswer = '';
-    this.apiService.getAnswer(this.id, this.questions[this.currentQuestionIndex].question, this.myAnswer ).subscribe(
+    this.apiService.getAnswer( this.questions[this.currentQuestionIndex].question, this.myAnswer ).subscribe(
       (response) => {
         if (response.answer && response.answer.length > 0) {
           this.answer = response.answer

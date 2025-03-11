@@ -1,5 +1,5 @@
 <div *ngIf="!quizFinished">
-  <div *ngIf="questions[currentQuestionIndex]?.length == 2">
+  <div *ngIf="questions[currentQuestionIndex]?.answer">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div *ngIf="questions[currentQuestionIndex]?.length != 2">
+  <div *ngIf="!questions[currentQuestionIndex]?.answer">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">

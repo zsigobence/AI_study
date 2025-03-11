@@ -161,7 +161,7 @@ app.get("/get_questions", async (req, res) => {
   const { id } = req.query; 
 
   try {
-    const noteData = await NoteCollection.findById(id);
+    const noteData = await NoteCollection.findOne({ isActive: true });
     if (!noteData || !noteData.questions || noteData.questions.length === 0) {
       return res.status(404).json({ error: "Nincsenek mentett kérdések!" });
     }
@@ -184,8 +184,7 @@ app.get("/get_questions", async (req, res) => {
   answer
 */
 app.get("/evaluate_question", async (req, res) => {
-const  id  = req.query.id; 
-const noteData = await NoteCollection.findById(id);
+const noteData = await NoteCollection.findOne({ isActive: true });
 const data = {
   note: noteData.title,
   subject: noteData.subject
@@ -204,12 +203,17 @@ app.post("/save_questions", async (req, res) => {
   }
 
   try {
+    await NoteCollection.updateMany(
+      {},
+      { $set: { isActive: false } } 
+    );
     let noteData = await NoteCollection.findOne({ subject: subject, title: note });
 
     if (!noteData) {
-      noteData = new NoteCollection({ title: note, subject: subject, questions: newQuestions });
+      noteData = new NoteCollection({ title: note, subject: subject, questions: newQuestions, isActive: true });
     } else {
       noteData.questions = newQuestions;
+      noteData.isActive = true;
     }
 
     await noteData.save();

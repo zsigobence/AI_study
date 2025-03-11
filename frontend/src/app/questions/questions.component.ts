@@ -9,7 +9,6 @@ import { NgFor, NgIf } from '@angular/common';
   styleUrls: ['./questions.component.css']
 })
 export class QuestionsComponent {
-  id: string = '67c81db18d07329ed749679e'; // meg lesz csinálva csak kipróbáltam beégetéssel
   questions: any[] = [];
 
   constructor(private apiService: ApiService) {}
@@ -19,7 +18,7 @@ export class QuestionsComponent {
   }
 
   getQuestions(): void {
-    this.apiService.getQuestionsById(this.id).subscribe(
+    this.apiService.getQuestions().subscribe(
       (response) => {
         if (response.questions && response.questions.length > 0) {
           this.questions = response.questions;

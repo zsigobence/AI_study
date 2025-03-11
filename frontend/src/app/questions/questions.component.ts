@@ -9,7 +9,7 @@ import { NgFor, NgIf } from '@angular/common';
   styleUrls: ['./questions.component.css']
 })
 export class QuestionsComponent {
-  id: string = '67cd6ff4d15032a897b23b47'; // meg lesz csinálva csak kipróbáltam beégetéssel
+  id: string = '67c81db18d07329ed749679e'; // meg lesz csinálva csak kipróbáltam beégetéssel
   questions: any[] = [];
 
   constructor(private apiService: ApiService) {}

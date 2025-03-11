@@ -56,6 +56,16 @@ export class ApiService {
   getQuestionsById(id: string): Observable<any> {
     return this.http.get<any>(`${this.API_URL}/get_questions?id=${id}`);
   }
+
+
+  getAnswer(id: string, question: string, answer: string): Observable<any> {
+    const params = {
+      id: id,
+      question: question,
+      answer: answer
+    };
+    return this.http.get<any>(`${this.API_URL}/evaluate_question`, { params: params });
+  }
 }
   
 

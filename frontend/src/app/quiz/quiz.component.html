@@ -1,20 +1,50 @@
 <div *ngIf="!quizFinished">
+  <div *ngIf="questions[currentQuestionIndex]?.length == 2">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
       <button 
         *ngFor="let option of ['igaz', 'hamis']"
-        (click)="answerQuestion(option)"
+        (click)="answerTFQuestion(option)"
         [disabled]="answerRevealed">
         {{ option }}
       </button>
     </div>
+  </div>
+
+  <div *ngIf="questions[currentQuestionIndex]?.length != 2">
+    <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
+  
+    <div class="answers">
+      <textarea rows="5" cols="50" [(ngModel)]="myAnswer"></textarea>
+      <br/>
+      <button 
+        (click)="answerSQSAQuestion()"
+        [disabled]="answerRevealed">
+         Ellenőrzés 
+      </button>
+    </div>
+  </div>
+  
+  
   
     <p>Idő: {{ timeLeft }} mp</p>
-  
-    <div *ngIf="answerRevealed">
+
+    <div *ngIf="answerRevealed && correctAnswer">
+      <div *ngIf="correctAnswer != 'IGAZ'">
       <p>Helyes válasz: <strong>{{ correctAnswer }}</strong></p>
+      </div>
+      <div *ngIf="correctAnswer == 'IGAZ'">
+        <p>A válaszod helyes</p>
+        </div>
+      <br/>
+
+    <button 
+      (click)="nextQuestion()">
+       Következő kérdés 
+    </button>
     </div>
+    
   </div>
   
   <div *ngIf="quizFinished">

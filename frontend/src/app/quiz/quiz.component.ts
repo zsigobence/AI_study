@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NgFor, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-quiz',
-  imports: [NgIf, NgFor],
+  imports: [FormsModule,NgIf, NgFor],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.css'
 })
 export class QuizComponent implements OnInit {
 
-  id: string = '';//beégetés kiszedése folyamatban...
+  id: string = '67c81db18d07329ed749679e';//beégetés kiszedése folyamatban...
   questions: any[] = [];
   currentQuestionIndex: number = 0;
   correctAnswer: string = '';
@@ -19,6 +20,8 @@ export class QuizComponent implements OnInit {
   timeLeft: number = 20;
   timer: any;
   answerRevealed: boolean = false;
+  answer : any[] = [];
+  myAnswer : string = "";
 
   constructor(private apiService: ApiService) {}
 
@@ -30,13 +33,21 @@ export class QuizComponent implements OnInit {
     this.apiService.getQuestionsById(this.id).subscribe(
       (response) => {
         if (response.questions && response.questions.length > 0) {
+          if (response.questions[0].length == 2){
           this.questions = response.questions.map((q: [string, string]) => ({
             question: q[0], 
             answer: q[1]
           }));
+          console.log(this.questions)
 
-          this.shuffleQuestions();
-          this.startTimer();
+        } else {
+          this.questions = response.questions.map((q: [string]) => ({
+            question: q
+          }));
+          console.log(this.questions)
+
+        }this.shuffleQuestions();
+        this.startTimer();
         } else {
           console.log('Nincsenek kérdések!');
         }
@@ -55,7 +66,7 @@ export class QuizComponent implements OnInit {
   }
 
   startTimer(): void {
-    this.timeLeft = 20;
+    this.timeLeft = 30;
     this.answerRevealed = false; 
     if (this.timer) clearInterval(this.timer);
 
@@ -68,7 +79,7 @@ export class QuizComponent implements OnInit {
     }, 1000);
   }
 
-  answerQuestion(selectedAnswer: string): void {
+  answerTFQuestion(selectedAnswer: string): void {
     if (this.answerRevealed) return;
 
     clearInterval(this.timer);
@@ -82,11 +93,43 @@ export class QuizComponent implements OnInit {
     setTimeout(() => this.nextQuestion(), 2000);
   }
 
+  answerSQSAQuestion(): void {
+    if (this.answerRevealed) return;
+
+    clearInterval(this.timer);
+    this.answerRevealed = true;
+    this.correctAnswer = '';
+    this.apiService.getAnswer(this.id, this.questions[this.currentQuestionIndex].question, this.myAnswer ).subscribe(
+      (response) => {
+        if (response.answer && response.answer.length > 0) {
+          this.answer = response.answer
+        }
+        if(this.answer[0] === "IGAZ"){
+          this.correctAnswer = "IGAZ"
+          this.score++;
+        } else {
+          console.log(this.answer[1])
+          this.correctAnswer = this.answer[1];
+        }
+        this.answerRevealed = true;
+    },
+    (error) => {
+      console.error('Hiba történt a kérdés kiértékelésekor:', error);
+    })
+    
+    this.myAnswer = ""
+  }
+
   timeUp(): void {
     clearInterval(this.timer);
+    this.correctAnswer = '';
+    if(this.questions.length == 2){
     this.correctAnswer = this.questions[this.currentQuestionIndex].answer;
+    }else {
+      this.answerSQSAQuestion()
+    }
     this.answerRevealed = true;
-    setTimeout(() => this.nextQuestion(), 2000);
+    this.myAnswer = ""
   }
 
   nextQuestion(): void {

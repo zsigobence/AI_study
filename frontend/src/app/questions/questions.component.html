@@ -4,10 +4,13 @@
     <div *ngIf="questions.length > 0">
       <div *ngFor="let question of questions" class="question-card">
         <div class="question-card-header">
-          <p class="question-title">{{ question[0] }}</p>
+          <p class="question-title" *ngIf="question.length > 2">{{ question }}</p>
+          <div *ngIf="question.length == 2">
+          <p class="question-title" >{{ question[0] }}</p>
           <button (click)="question.showAnswer = !question.showAnswer" class="toggle-btn">
             {{ question.showAnswer ? 'Rejtés' : 'Mutatás' }}
           </button>
+        </div>
         </div>
         
         <div *ngIf="question.showAnswer" class="question-card-body">

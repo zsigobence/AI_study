@@ -162,7 +162,6 @@ app.get("/get_questions", async (req, res) => {
 
   try {
     const noteData = await NoteCollection.findById(id);
-
     if (!noteData || !noteData.questions || noteData.questions.length === 0) {
       return res.status(404).json({ error: "Nincsenek mentett kérdések!" });
     }
@@ -185,9 +184,15 @@ app.get("/get_questions", async (req, res) => {
   answer
 */
 app.get("/evaluate_question", async (req, res) => {
-const text = await processPdf(req.query);
-const array = await evaluate_question(req.query,text)
-res.json(array);
+const  id  = req.query.id; 
+const noteData = await NoteCollection.findById(id);
+const data = {
+  note: noteData.title,
+  subject: noteData.subject
+};
+const text = await processPdf(data);
+const answer = await evaluate_question(req.query,text)
+res.json({ answer: answer });
 });
 
 //kérdések mentése

@@ -52,6 +52,7 @@ async function generateSQSAQuestions(data, text) {
 
 async function evaluate_question(data, text) {
   const prompt = `
+  Képzeld el hogy egy egyetemi tanár vagy és úgy válaszolj a kérdésekre
   Erre a kérdésre ${data.question} megfelelő-e ez a válasz ${data.answer} a jegyzet alapján\n ${text}.\n
   javascript által értelmezhető tömb formátumba írd le a kiértékeléseket
   A válasz helyességét és a javítást ha szükséges egy tömbben add vissza
@@ -63,8 +64,16 @@ const questions = result.response.text();
 const cleanedText = questions
     .replace(/```javascript/, "")
     .replace(/```/, "")
+    .replace(/json/, "")
+    .replace(/],/, "]")
+    .replace(/```/, "")
     .trim();
-  const parsedQuestions = JSON.parse(cleanedText);
+  console.log(cleanedText)
+  let parsedQuestions = JSON.parse(cleanedText);
+
+  if (Array.isArray(parsedQuestions[0])) {
+    parsedQuestions = parsedQuestions[0];
+  }
 
   if (parsedQuestions.length > data.length) {
     return getRandomSubarray(parsedQuestions, data.length);

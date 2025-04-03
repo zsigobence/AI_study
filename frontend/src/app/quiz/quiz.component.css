@@ -1,19 +1,19 @@
-button {
+
+
+.button {
     margin: 10px;
     padding: 10px;
     font-size: 18px;
-    background-color: #007BFF;
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  button:disabled {
-    background-color: gray;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
+  mat-form-field {
+  min-width: 70%;
+}
+@media (max-width: 768px) {
+h2 {
+  font-size: large;
+}}
   

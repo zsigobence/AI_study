@@ -1,202 +1,106 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f1faee;
-    color: #1d3557;
-  }
-  
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
-    gap: 20px;
-  }
-  
-  .left-side, .right-side {
-    flex: 1;
-    min-width: 300px;
-  }
-  
-  .generate, .upload, .list_notes {
-    background-color: #a8dadc;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .generate {
-    background-color: #a8dadc;
-  }
-  
-  .upload {
-    background-color: #a8dadc;
-  }
-  
-  .list_notes {
-    background-color: #a8dadc;
-  }
-  
-  h2, h3, h4 {
-    color: #1d3557;
-    margin-bottom: 20px;
-  }
-  
-  h4 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    border-bottom: 2px solid #1d3557;
-    padding-bottom: 5px;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #34495e;
-  }
-  
-  select, input[type="text"], input[type="file"] {
-    width: 90%;
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #f1faee;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: #f1faee;
-    transition: border-color 0.3s ease;
-  }
-  
-  select:focus, input[type="text"]:focus, input[type="file"]:focus {
-    border-color: #f1faee;
-    outline: none;
-  }
-  
-  button {
-    background-color: #457b9d;
-    color: #f1faee;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #1d3557;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    background-color: #f1faee;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  li:hover {
-    background-color: #f1f1f1;
-  }
-  
-  li:last-child {
-    border-bottom: none;
-  }
-  
-  li button {
-    margin-left: 10px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 12px;
-    background-color: #e63946;
-    color: #f1faee;
-    transition: background-color 0.3s ease;
-  }
-  
-  li button:hover {
-    background-color: rgb(180, 28, 51);
-  }
-  .radio-group {
-    margin-bottom: 16px;
-    display: flex; 
-    gap: 16px; 
-  }
-  
-  .radio-group label {
-    display: inline-flex; 
-    align-items: center; 
-    font-weight: normal;
-    color: #34495e;
-  }
-  
-  .radio-group input[type="radio"] {
-    margin-right: 8px; 
-  }
-  
-  .radio-group input[type="radio"]:focus {
-    outline: none;
-  }
-  input[type="range"] {
-    width: 90%; /* Szélesség */
-    margin-top: 8px;
-    margin-bottom: 16px;
-    background-color: #f1faee;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  
-  input[type="range"]:focus {
-    outline: none;
-  }
-  
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+
+.left-side, .right-side {
+  flex: 1;
+  min-width: 300px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+mat-card-title {
+  padding: 20px;
+  padding-bottom: 5px;
+}
+
+mat-card {
+  margin-bottom: 20px;
+  padding: 8px;
+}
+.note-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.note-title {
+  flex: 1;
+  margin-right: 10px;
+  word-break: break-word;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  padding-right: 20px;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+.mat-mdc-list-item, .mat-mdc-list-option {
+  width: 100%;
+  box-sizing:content-box; 
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 
   span {
-    margin-left: 10px;
-    font-weight: bold;
-    color: #1d3557;
+    white-space: nowrap; 
   }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-      padding: 10px;
-      gap: 10px;
-    }
-  
-    .left-side, .right-side {
-      width: 100%;
-      margin: 0;
-    }
-  
-    .generate, .upload, .list_notes {
-      padding: 15px;
-    }
-  
-    button {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-    }
-  
-    li {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    li button {
-      margin-top: 10px;
-      width: 100%;
-    }
+
+  mat-slider {
+    flex: 1; 
+    min-width: 0;
   }
+}
+
+@media (max-width: 600px) {
+  .note-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .button-group {
+    padding-right: 0;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .mat-mdc-list-item, .mat-mdc-list-option {
+    padding-block: 8px;
+  }
+
+  .file-input {
+    padding-bottom: 15px;
+  }
+}
+
+
+
+

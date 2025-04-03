@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared.module'; 
 
 @Component({
   selector: 'app-quiz',
-  imports: [FormsModule,NgIf, NgFor],
+  standalone: true,
+  imports: [SharedModule],
   templateUrl: './quiz.component.html',
-  styleUrl: './quiz.component.css'
+  styleUrls: ['./quiz.component.css']
 })
 export class QuizComponent implements OnInit {
 

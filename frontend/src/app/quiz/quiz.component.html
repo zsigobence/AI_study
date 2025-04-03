@@ -1,12 +1,14 @@
-<div *ngIf="!quizFinished">
+ <div *ngIf="!quizFinished">
   <div *ngIf="questions[currentQuestionIndex]?.answer">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
-      <button 
+      <button mat-flat-button
+      color="primary"
+      class="button"
         *ngFor="let option of ['igaz', 'hamis']"
         (click)="answerTFQuestion(option)"
-        [disabled]="answerRevealed">
+        [disabled]="answerRevealed">  
         {{ option }}
       </button>
     </div>
@@ -16,12 +18,15 @@
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
-      <textarea rows="5" cols="50" [(ngModel)]="myAnswer"></textarea>
+      <mat-form-field>
+        <mat-label>Válasz</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
       <br/>
-      <button 
-        (click)="answerSQSAQuestion()"
-        [disabled]="answerRevealed">
-         Ellenőrzés 
+      <button mat-flat-button
+      color="primary"
+      (click)="answerSQSAQuestion()"
+      [disabled]="answerRevealed">Ellenőrzés
       </button>
     </div>
   </div>
@@ -39,7 +44,8 @@
         </div>
       <br/>
 
-    <button 
+    <button mat-flat-button
+    color="primary"
       (click)="nextQuestion()">
        Következő kérdés 
     </button>

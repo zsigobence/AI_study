@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../api.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { LoadingDialog } from './loadingDialog';
+import { SharedModule } from '../shared.module'; 
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-upload',
-  imports: [FormsModule,CommonModule],
+  imports: [SharedModule], 
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
   selectedFile: File | null = null;
   subject: string = "";
-  notes: any[] = [];  // Jegyzetek listája
-
+  notes: any[] = [];  
   selectedSubject: string = "";
   selectedNote: string = "";
   selectedType: string = "";
@@ -25,6 +25,24 @@ export class UploadComponent implements OnInit {
 
   filteredNotes: any[] = [];
   filteredNotesList: any[] = [];
+
+  readonly dialog = inject(MatDialog);
+  dialogRef?: MatDialogRef<LoadingDialog>;
+  snackBar = inject(MatSnackBar);
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action);
+
+  }
+
+  
+
+  openDialog(): void {
+    this.dialogRef = this.dialog.open(LoadingDialog, {
+      width: '400px',
+      height: '300px'});
+  }
+  
 
   ngOnInit(): void {
     this.loadNotes();
@@ -88,13 +106,13 @@ export class UploadComponent implements OnInit {
 
   generate() {
     if (this.selectedLength && this.selectedType && this.selectedSubject) {
+      this.openDialog()
       this.apiService.generateQuestions(this.selectedLength, this.selectedType, this.selectedSubject, this.selectedNote)
         .subscribe(
           (response) => {
             console.log("Generált kérdések:", response);
-            alert("Generálás sikeres!");
-  
-            // ⬇️ A generált kérdések mentése az adatbázisba
+            this.dialogRef?.close();
+            this.openSnackBar('Generálás sikeres','close')
             this.apiService.saveQuestions(this.selectedSubject, this.selectedNote, response).subscribe(
               () => {
                 alert("Kérdések sikeresen mentve az adatbázisba!");

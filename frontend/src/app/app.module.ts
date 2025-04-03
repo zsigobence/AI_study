@@ -9,7 +9,6 @@ import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +22,6 @@ import { HeaderComponent } from './header/header.component';
     NgFor,
     HttpClientModule,
     FormsModule,
-    
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

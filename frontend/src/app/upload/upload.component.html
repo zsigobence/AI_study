@@ -1,68 +1,98 @@
 <div class="container">
   <div class="left-side">
-    <div class="generate">
-      <h2>Kérdésgenerálás</h2>
-      <div>
-        <label>Tantárgy</label>
-        <select id="subjects" name="subjects" [(ngModel)]="selectedSubject" (change)="onSubjectChange()">
-          <option *ngFor="let subject of getUniqueSubjects()" [value]="subject">{{ subject }}</option>
-        </select>
 
-        <label>Jegyzet</label>
-        <select id="notes" name="notes" [(ngModel)]="selectedNote">
-          <option>Egyik sem</option>
-          <option *ngFor="let note of filteredNotes" [value]="note.title">{{ note.title }}</option>
-        </select>
+    <!-- Kérdésgenerálás -->
+    <mat-card class="generate">
+      <mat-card-title>Kérdésgenerálás</mat-card-title>
+      <mat-card-content>
 
-        <label>Kérdések száma</label>
-        <input type="range" id="slider" name="slider" min="1" max="100" [(ngModel)]="selectedLength" >
-  <span>{{ selectedLength }}</span>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Tantárgy</mat-label>
+          <mat-select [(ngModel)]="selectedSubject" (selectionChange)="onSubjectChange()">
+            <mat-option *ngFor="let subject of getUniqueSubjects()" [value]="subject">{{ subject }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <label>Kérdés típus</label>
-        <div class="radio-group">
-          <label>
-            <input type="radio" name="question_type" [(ngModel)]="selectedType" value="SQSA"> Rövid kérdés rövid válasz
-          </label>
-          <label>
-            <input type="radio" name="question_type" [(ngModel)]="selectedType" value="TF"> Igaz-Hamis
-          </label>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Jegyzet</mat-label>
+          <mat-select [(ngModel)]="selectedNote">
+            <mat-option value="">Egyik sem</mat-option>
+            <mat-option *ngFor="let note of filteredNotes" [value]="note.title">{{ note.title }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="slider-row">
+          <span>Kérdések száma: {{ selectedLength }}</span>
+          <mat-slider min="1" max="100" step="1" [discrete]="true">
+            <input matSliderThumb [(ngModel)]="selectedLength">
+          </mat-slider>
         </div>
-        <br/>
-        <button (click)="generate()">Generálás</button>
-      </div>
-    </div>
-    <div class="upload">
-      <h2>Jegyzetek Feltöltése</h2>
-      <div>
-        <label>Tantárgy</label>
-        <input type="text" placeholder="Tantárgy neve" [(ngModel)]="subject">
-        <label>Jegyzet</label>
-        <input type="file" (change)="onFileSelected($event)">
-        <br/>
-        <button (click)="upload()">Feltöltés</button>
-      </div>
-    </div>
+        
+
+        <mat-radio-group [(ngModel)]="selectedType" class="radio-group" color="primary">
+          <mat-radio-button value="SQSA">Rövid kérdés rövid válasz</mat-radio-button>
+          <mat-radio-button value="TF">Igaz-Hamis</mat-radio-button>
+        </mat-radio-group>
+
+        <button mat-raised-button color="primary" (click)="generate()">Generálás</button>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Jegyzet Feltöltés -->
+    <mat-card class="upload">
+      <mat-card-title>Jegyzetek Feltöltése</mat-card-title>
+      <mat-card-content>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Tantárgy</mat-label>
+          <input matInput placeholder="Tantárgy neve" [(ngModel)]="subject">
+        </mat-form-field>
+
+        <input class="file-input" type="file" (change)="onFileSelected($event)">
+
+        <button mat-raised-button color="primary" (click)="upload()">Feltöltés</button>
+
+      </mat-card-content>
+    </mat-card>
+
   </div>
+
+  <!-- Jegyzet lista -->
   <div class="right-side">
-    <div class="list_notes">
-      <h3>Feltöltött jegyzetek:</h3>
-      <select id="subjects" name="subjects" [(ngModel)]="selectedListSubject" (change)="onSubjectChange()">
-        <option *ngFor="let subject of getUniqueSubjects()" [value]="subject">{{ subject }}</option>
-      </select>
-      <div *ngIf="selectedListSubject">
-        <ul>
-          <li *ngFor="let note of filteredNotesList">
-            {{ note.title }}
-            <div>
-              <button (click)="viewNote(note.title)">📄 Megnyitás</button>
-              <button (click)="deleteNote(note.title)">🗑️ Törlés</button>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div *ngIf="!selectedListSubject">
-        <p>Válassz ki egy tantárgyat a jegyzetek megtekintéséhez.</p>
-      </div>
-    </div>
-  </div>
-</div>
+
+    <mat-card class="list_notes">
+      <mat-card-title>Feltöltött jegyzetek</mat-card-title>
+      <mat-card-content>
+    
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Tantárgy</mat-label>
+          <mat-select [(ngModel)]="selectedListSubject" (selectionChange)="onSubjectChange()">
+            <mat-option *ngFor="let subject of getUniqueSubjects()" [value]="subject">{{ subject }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <ng-container *ngIf="selectedListSubject; else noSubject">
+          <mat-list>
+            <mat-list-item class="note-cards" *ngFor="let note of filteredNotesList">
+
+              <div class="note-row">
+                  <div class="note-title">{{ note.title }}</div>
+                  <div class="button-group">
+                      <button mat-stroked-button color="primary" (click)="viewNote(note.title)">📄 Megnyitás</button>
+                      <button mat-stroked-button color="warn" (click)="deleteNote(note.title)">🗑️ Törlés</button>
+                  </div>
+              </div>
+    
+            </mat-list-item>
+          </mat-list>
+        </ng-container>
+    
+        <ng-template #noSubject>
+          <p>Válassz ki egy tantárgyat</p>
+        </ng-template>
+    
+      </mat-card-content>
+    </mat-card>
+
+    

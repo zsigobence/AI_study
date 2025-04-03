@@ -1,0 +1,14 @@
+@use '@angular/material' as mat;
+
+
+
+
+.questions{
+  @include mat.expansion-overrides((
+  ));
+
+  @include mat.card-overrides((
+  ));
+
+}
+

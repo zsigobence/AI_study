@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { NgFor, NgIf } from '@angular/common';
+import { SharedModule } from '../shared.module'; 
 
 @Component({
-  selector: 'questions',
-  imports: [NgFor, NgIf],
+  selector: 'app-questions',
+  standalone: true,
+  imports: [SharedModule], 
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.css']
 })
@@ -16,6 +17,7 @@ export class QuestionsComponent {
   ngOnInit(): void {
     this.getQuestions();
   }
+
 
   getQuestions(): void {
     this.apiService.getQuestions().subscribe(

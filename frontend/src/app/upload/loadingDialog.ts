@@ -9,8 +9,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'loading-dialog',
+    standalone: true,
     template: `
-    <h2 mat-dialog-title>Generálás</h2>
+    <h2 mat-dialog-title>{{ title }}</h2>
     <mat-dialog-content>
     <mat-spinner></mat-spinner>
     </mat-dialog-content>`
@@ -37,4 +38,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   })
   export class LoadingDialog {
     readonly dialogRef = inject(MatDialogRef<LoadingDialog>);
+    title = 'Generálás';
+  
+    setTitle(newTitle: string) {
+      this.title = newTitle;
+    }
   }

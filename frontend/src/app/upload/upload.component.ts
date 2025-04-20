@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { LoadingDialog } from './loadingDialog';
 import { SharedModule } from '../shared.module'; 
-import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-upload',
@@ -28,20 +27,7 @@ export class UploadComponent implements OnInit {
 
   readonly dialog = inject(MatDialog);
   dialogRef?: MatDialogRef<LoadingDialog>;
-  snackBar = inject(MatSnackBar);
 
-  openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action);
-
-  }
-
-  
-
-  openDialog(): void {
-    this.dialogRef = this.dialog.open(LoadingDialog, {
-      width: '400px',
-      height: '300px'});
-  }
   
 
   ngOnInit(): void {
@@ -106,20 +92,22 @@ export class UploadComponent implements OnInit {
 
   generate() {
     if (this.selectedLength && this.selectedType && this.selectedSubject) {
-      this.openDialog()
+      this.dialogRef = this.dialog.open(LoadingDialog, {
+        width: '400px',
+        height: '300px'});
       this.apiService.generateQuestions(this.selectedLength, this.selectedType, this.selectedSubject, this.selectedNote)
         .subscribe(
           (response) => {
             console.log("Generált kérdések:", response);
-            this.dialogRef?.close();
-            this.openSnackBar('Generálás sikeres','close')
+            this.dialogRef?.componentInstance.setTitle('Kérdések feltöltése az adatbázisba');
             this.apiService.saveQuestions(this.selectedSubject, this.selectedNote, response).subscribe(
               () => {
-                alert("Kérdések sikeresen mentve az adatbázisba!");
+                this.dialogRef?.close();
                 this.router.navigate(['/questions']);
               },
               (error) => {
                 console.error("Hiba történt a kérdések mentésekor:", error);
+                this.dialogRef?.close();
                 alert("Hiba történt a mentés során.");
               }
             );
@@ -127,11 +115,12 @@ export class UploadComponent implements OnInit {
           },
           (error) => {
             console.error("Hiba történt!", error);
+            this.dialogRef?.close();
             alert("Hiba történt a generálás során. Próbálja újra!");
           }
         );
     } else {
-      alert("Adj meg egy típust és válassz egy fájlt!");
+      alert("hiányzó vagy hibás adatok!");
     }
   }
   

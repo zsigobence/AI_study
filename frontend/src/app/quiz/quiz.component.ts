@@ -16,11 +16,13 @@ export class QuizComponent implements OnInit {
   correctAnswer: string = '';
   score: number = 0;
   quizFinished: boolean = false;
-  timeLeft: number = 20;
+  timeLeft: number = 0;
+  maxTime: number = 30;
   timer: any;
   answerRevealed: boolean = false;
   answer : any[] = [];
   myAnswer : string = "";
+  isStarted : boolean = false;
 
   constructor(private apiService: ApiService) {}
 
@@ -46,7 +48,6 @@ export class QuizComponent implements OnInit {
           console.log(this.questions)
 
         }this.shuffleQuestions();
-        this.startTimer();
         } else {
           console.log('Nincsenek kérdések!');
         }
@@ -65,7 +66,7 @@ export class QuizComponent implements OnInit {
   }
 
   startTimer(): void {
-    this.timeLeft = 30;
+    this.timeLeft = this.maxTime;
     this.answerRevealed = false; 
     if (this.timer) clearInterval(this.timer);
 
@@ -121,13 +122,20 @@ export class QuizComponent implements OnInit {
   timeUp(): void {
     clearInterval(this.timer);
     this.correctAnswer = '';
-    if(this.questions.length == 2){
+    if(this.questions[0].answer){
+    console.log(this.questions[0].length)
     this.correctAnswer = this.questions[this.currentQuestionIndex].answer;
     }else {
+      console.log(this.questions[0].length)
       this.answerSQSAQuestion()
     }
     this.answerRevealed = true;
     this.myAnswer = ""
+  }
+
+  startQuiz(): void {
+    this.isStarted = true;
+    this.startTimer();
   }
 
   nextQuestion(): void {

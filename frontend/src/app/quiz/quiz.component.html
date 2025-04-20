@@ -1,5 +1,36 @@
- <div *ngIf="!quizFinished">
-  <div *ngIf="questions[currentQuestionIndex]?.answer">
+<div class="start" *ngIf="!isStarted">
+  <div class="start-content">
+  <h2>Kvíz</h2>
+  <div id="text">
+  <span>{{questions.length}} darab </span><span *ngIf="questions[0].answer">igaz-hamis </span><span *ngIf="!questions[0].answer">rövid válaszos </span>
+  <span> kérdésre kell válaszolnod</span>
+  </div>
+  <mat-form-field>
+    <mat-label>Idő kérdésenként (mp)</mat-label>
+    <input matInput type="number" [(ngModel)]="maxTime" min="0" max="1000">
+  </mat-form-field>
+  <button mat-flat-button
+      color="primary"
+      class="button"
+        (click)="startQuiz()">  
+        Indítás
+      </button>
+    </div>
+</div> 
+ 
+ <div class="questions" *ngIf="!quizFinished && isStarted">
+  <div class="question">
+    <div class="spinner-container"  *ngIf="!answerRevealed">
+      <mat-progress-spinner
+        mode="determinate"
+        [value]="timeLeft*(100/maxTime)">
+      </mat-progress-spinner>
+      <div class="spinner-text">
+        {{ timeLeft }}
+      </div>
+    </div>
+  <div class="quiz">
+  <div class="TF" *ngIf="questions[currentQuestionIndex]?.answer">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
@@ -14,7 +45,7 @@
     </div>
   </div>
 
-  <div *ngIf="!questions[currentQuestionIndex]?.answer">
+  <div class="SQSA" *ngIf="!questions[currentQuestionIndex]?.answer">
     <h2>{{ questions[currentQuestionIndex]?.question }}</h2>
   
     <div class="answers">
@@ -22,7 +53,6 @@
         <mat-label>Válasz</mat-label>
         <textarea matInput></textarea>
       </mat-form-field>
-      <br/>
       <button mat-flat-button
       color="primary"
       (click)="answerSQSAQuestion()"
@@ -31,29 +61,26 @@
     </div>
   </div>
   
-  
-  
-    <p>Idő: {{ timeLeft }} mp</p>
 
-    <div *ngIf="answerRevealed && correctAnswer">
+    <div class="revealed" *ngIf="answerRevealed && correctAnswer">
       <div *ngIf="correctAnswer != 'IGAZ'">
-      <p>Helyes válasz: <strong>{{ correctAnswer }}</strong></p>
+      <p>Helyes válasz: </p><p><strong>{{ correctAnswer }}</strong></p>
       </div>
       <div *ngIf="correctAnswer == 'IGAZ'">
         <p>A válaszod helyes</p>
         </div>
       <br/>
-
+    <div id="nextButton">
     <button mat-flat-button
-    color="primary"
+      color="primary"
       (click)="nextQuestion()">
        Következő kérdés 
     </button>
     </div>
-    
+    </div>
   </div>
+</div>
   
-  <div *ngIf="quizFinished">
+  <div *ngIf="quizFinished && isStarted">
     <h2>Végeredmény: {{ score }} / {{ questions.length }}</h2>
   </div>
-  

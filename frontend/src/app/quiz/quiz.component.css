@@ -1,19 +1,135 @@
+.start{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.start-content{
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 20px;
+}
+
+.start-content #text{
+  margin-bottom: 10px;
+}
 
 .button {
-    margin: 10px;
-    padding: 10px;
     font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
+
+  .TF{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .question{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quiz{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin-inline: 20px;
+  }
+
+  .quiz p{
+    display: flex;
+    justify-content: center;
+  }
+
+
+  .TF .answers {
+    gap: 20px;
+  }  
+
+  .SQSA .answers{
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 20px;
+  }
+
+  .SQSA .answers mat-form-field{
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .SQSA .answers button{
+    max-width: 60%;
+  }
+
+  .answers{
+    display: flex;
+    justify-content: center;
+  }
+
+  #nextButton{
+    display: flex;
+    justify-content: end;
+    align-items: end;
+  }
+
+  .spinner-container {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+    margin-bottom: 40px;
+  }
+  
+  mat-progress-spinner {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  
+  .spinner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
   
   mat-form-field {
   min-width: 70%;
 }
 @media (max-width: 768px) {
+.questions{
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+.question{
+  display: flex;
+  flex-direction: column;
+}
+
+.answers{
+  display: flex;
+  justify-content: center;
+}
+
+
+#nextButton{
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
 h2 {
   font-size: large;
 }}
-  

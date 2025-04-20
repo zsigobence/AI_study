@@ -64,20 +64,7 @@ mat-card-content {
   width: 100%;
   box-sizing:content-box; 
 }
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 15px;
 
-  span {
-    white-space: nowrap; 
-  }
-
-  mat-slider {
-    flex: 1; 
-    min-width: 0;
-  }
-}
 
 @media (max-width: 600px) {
   .note-row {

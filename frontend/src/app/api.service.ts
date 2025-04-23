@@ -10,6 +10,18 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  login(username: string, password: string) {
+    return this.http.post('/api/login', { username, password });
+  }
+  
+  addUser(username: string, password: string, role: string): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/add_user`, {
+      username,
+      password,
+      role,
+    });
+  }
+
 
   getNotes(): Observable<any> {
     return this.http.get(`${this.API_URL}/notes_data`);

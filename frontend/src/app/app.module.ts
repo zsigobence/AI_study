@@ -8,12 +8,14 @@ import { CommonModule } from '@angular/common';
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './token.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     NotesListComponent,
-    HeaderComponent
+    HeaderComponent,
     
   ],
   imports: [
@@ -23,7 +25,14 @@ import { HeaderComponent } from './header/header.component';
     HttpClientModule,
     FormsModule,
   ],
-  providers: [ApiService],
+  providers: [
+    ApiService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

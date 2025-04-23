@@ -7,13 +7,125 @@ const pdfParse = require("pdf-parse");
 const multer = require("multer");
 app.use("/notes", express.static(path.join(__dirname, "notes")));
 const PORT = 3000;
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 app.use(express.json());
 app.use(cors());
 const { connectDB, NoteCollection } = require("./dbConfig");
+const { UserCollection } = require("./dbConfig"); 
 const { saveFile, ensureDirectoryExists } = require("./noteFunctions");
 const { generateTFQuestions, generateSQSAQuestions, evaluate_question } = require("./aiFunctions");
 connectDB();
 ensureDirectoryExists();
+
+
+async function createDefaultAdmin() {
+  try {
+    const adminExists = await UserCollection.findOne({ name: 'admin' });
+
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      const admin = new UserCollection({
+        name: 'admin',
+        password: hashedPassword,
+        role: 'admin',
+      });
+      await admin.save();
+      console.log('Alap admin felhasználó létrehozva');
+    } else {
+      console.log('Admin felhasználó már létezik');
+    }
+  } catch (err) {
+    console.error('Hiba történt az admin felhasználó létrehozása során:', err);
+  }
+}
+
+createDefaultAdmin();
+
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
+
+  try {
+    const user = await UserCollection.findOne({ name: username });
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ userId: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
+
+    res.json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+function authenticateToken(req, res, next) {
+  const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
+
+  if (!token) {
+    return res.status(403).json({ message: 'Token is required' });
+  }
+
+  jwt.verify(token, 'your_jwt_secret', (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+
+    req.user = user;
+    next();
+  });
+}
+
+module.exports = authenticateToken;
+
+function isAdmin(req, res, next) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'You do not have admin privileges' });
+  }
+  next();
+}
+
+module.exports = isAdmin;
+
+app.post("/add_user", authenticateToken, isAdmin, (req, res) => {
+  const { username, password, role } = req.body;
+
+  UserCollection.findOne({ username: username }).then(existingUser => {
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists!' });
+    }
+
+    bcrypt.hash(password, 10).then(hashedPassword => {
+      const newUser = new UserCollection({
+        username,
+        password: hashedPassword,
+        role
+      });
+
+      newUser.save().then(user => {
+        res.status(201).json({ message: 'User successfully added!' });
+      }).catch(err => {
+        res.status(500).json({ message: 'Error adding user!', error: err });
+      });
+    });
+  });
+});
+
+
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

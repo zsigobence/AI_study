@@ -23,6 +23,7 @@ export class LoginComponent {
   onSubmit() {
     this.auth.login(this.username, this.password).subscribe({
       next: (res) => {
+        console.log(localStorage)
         console.log('Sikeres bejelentkezés!');
         this.router.navigate(['/']);
       },

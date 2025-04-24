@@ -1,0 +1,42 @@
+<!-- Felhasználói lista -->
+<table>
+  <thead>
+    <tr>
+      <th>Felhasználónév</th>
+      <th>Szerepkör</th>
+      <th>Műveletek</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{ user.name }}</td>
+      <td>{{ user.role }}</td>
+      <td>
+        <button (click)="editUser(user)">Szerkeszt</button>
+        <button (click)="deleteUser(user._id)">Töröl</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal a felhasználó szerkesztéséhez -->
+<div class="modal" *ngIf="isModalOpen">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h2>Felhasználó szerkesztése</h2>
+    <form (ngSubmit)="updateUser()">
+      <div>
+        <label for="username">Felhasználónév</label>
+        <input type="text" id="username" [(ngModel)]="selectedUser.username" name="username" required />
+      </div>
+      <div>
+        <label for="role">Szerepkör</label>
+        <select id="role" [(ngModel)]="selectedUser.role" name="role" required>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+      <button type="submit">Frissítés</button>
+    </form>
+  </div>
+</div>

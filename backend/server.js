@@ -103,14 +103,14 @@ module.exports = isAdmin;
 app.post("/add_user", authenticateToken, isAdmin, (req, res) => {
   const { username, password, role } = req.body;
 
-  UserCollection.findOne({ username: username }).then(existingUser => {
+  UserCollection.findOne({ name: username }).then(existingUser => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists!' });
     }
 
     bcrypt.hash(password, 10).then(hashedPassword => {
       const newUser = new UserCollection({
-        username,
+        name: username,
         password: hashedPassword,
         role
       });
@@ -124,6 +124,53 @@ app.post("/add_user", authenticateToken, isAdmin, (req, res) => {
   });
 });
 
+app.get('/users', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const users = await UserCollection.find({}, '-password');
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Hiba a felhasználók lekérdezése során!' });
+  }
+});
+
+app.put('/users/:id', authenticateToken, isAdmin, async (req, res) => {
+  const { username, password, role } = req.body;
+  const updateData = {};
+
+  if (username) updateData.name = username;
+  if (role) updateData.role = role;
+
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updateData.password = hashedPassword;
+  }
+
+  try {
+    const updatedUser = await UserCollection.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedUser) return res.status(404).json({ message: 'Felhasználó nem található!' });
+
+    res.json({ success: true, message: 'Felhasználó frissítve!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Hiba a frissítés során!' });
+  }
+});
+
+app.delete('/users/:id', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const deletedUser = await UserCollection.findByIdAndDelete(req.params.id);
+
+    if (!deletedUser) return res.status(404).json({ message: 'Felhasználó nem található!' });
+
+    res.json({ success: true, message: 'Felhasználó törölve!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Hiba a törlés során!' });
+  }
+});
 
 
 

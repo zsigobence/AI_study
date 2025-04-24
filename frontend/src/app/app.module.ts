@@ -10,13 +10,21 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedModule } from './shared.module';
+import { ListuserComponent } from './listuser/listuser.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     NotesListComponent,
     HeaderComponent,
-    
+    ListuserComponent
   ],
   imports: [
     BrowserModule,
@@ -24,6 +32,12 @@ import { TokenInterceptor } from './token.interceptor';
     NgFor,
     HttpClientModule,
     FormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,
+    SharedModule
   ],
   providers: [
     ApiService,

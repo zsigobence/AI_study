@@ -4,6 +4,8 @@ import { UploadComponent } from './upload/upload.component';
 import { QuestionsComponent } from './questions/questions.component';
 import { QuizComponent } from './quiz/quiz.component';
 import { LoginComponent } from './login/login.component';
+import { AdduserComponent } from './adduser/adduser.component';
+import { ListuserComponent } from './listuser/listuser.component';
 
 
 export const routes: Routes = [
@@ -27,6 +29,14 @@ export const routes: Routes = [
 {
     path: 'login',
     component: LoginComponent
+},
+{
+    path: 'adduser',
+    component: AdduserComponent
+},
+{
+    path: 'listuser',
+    component: ListuserComponent
 },
 
 

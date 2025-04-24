@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,18 +9,49 @@ export class ApiService {
   private API_URL = 'http://localhost:3000';  
 
   constructor(private http: HttpClient) {}
-
-  login(username: string, password: string) {
-    return this.http.post('/api/login', { username, password });
-  }
   
-  addUser(username: string, password: string, role: string): Observable<any> {
-    return this.http.post<any>(`${this.API_URL}/add_user`, {
-      username,
-      password,
-      role,
+  addUser(data: any) {
+    const token = this.getToken();
+    return this.http.post(`${this.API_URL}/add_user`, data, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
     });
   }
+
+  private getToken(): string {
+    return localStorage.getItem('token') || '';
+  }
+  
+
+  getUsers() {
+    const token = this.getToken();
+    return this.http.get<any[]>(`${this.API_URL}/users`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+
+  deleteUser(id: string) {
+    const token = this.getToken();
+    return this.http.delete(`${this.API_URL}/users/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+  
+
+  updateUser(id: string, data: any) {
+    const token = this.getToken();
+    return this.http.put(`${this.API_URL}/users/${id}`, data, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+  
 
 
   getNotes(): Observable<any> {

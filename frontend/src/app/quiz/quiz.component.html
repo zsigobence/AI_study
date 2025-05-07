@@ -10,7 +10,6 @@
     <input matInput type="number" [(ngModel)]="maxTime" min="0" max="1000">
   </mat-form-field>
   <button mat-flat-button
-      color="primary"
       class="button"
         (click)="startQuiz()">  
         Indítás
@@ -35,7 +34,6 @@
   
     <div class="answers">
       <button mat-flat-button
-      color="primary"
       class="button"
         *ngFor="let option of ['igaz', 'hamis']"
         (click)="answerTFQuestion(option)"
@@ -54,7 +52,6 @@
         <textarea matInput></textarea>
       </mat-form-field>
       <button mat-flat-button
-      color="primary"
       (click)="answerSQSAQuestion()"
       [disabled]="answerRevealed">Ellenőrzés
       </button>
@@ -72,7 +69,6 @@
       <br/>
     <div id="nextButton">
     <button mat-flat-button
-      color="primary"
       (click)="nextQuestion()">
        Következő kérdés 
     </button>

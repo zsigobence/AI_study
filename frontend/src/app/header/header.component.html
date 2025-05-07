@@ -11,7 +11,7 @@
   </ul>
   
   <div class="auth-button">
-    <button *ngIf="!isLoggedIn" (click)="goToLogin()" class="login-button">Bejelentkezés</button>
-    <button *ngIf="isLoggedIn" (click)="logout()" class="logout-button">Kilépés</button>
+    <button mat-flat-button color="primary" *ngIf="!isLoggedIn" (click)="goToLogin()" class="login-button">Bejelentkezés</button>
+    <button mat-flat-button color="primary" *ngIf="isLoggedIn" (click)="logout()" class="logout-button">Kilépés</button>
   </div>
 </nav>

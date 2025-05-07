@@ -9,7 +9,7 @@ $my-theme: mat.m2-define-light-theme((
     accent: mat.m2-define-palette(mat.$m2-pink-palette),
     warn: mat.m2-define-palette(mat.$m2-red-palette),
     background: (
-      background-color: #f5f7fa,
+      background-color: #eaebee,
       surface: #ffffff
     )
   ),
@@ -20,11 +20,18 @@ $my-theme: mat.m2-define-light-theme((
 @include mat.all-component-themes($my-theme);
 
 body {
-  background-color: #f5f7fa; 
+  background-color: #eaebee; 
 }
 
 :root {
   @include mat.list-overrides((
     list-item-one-line-container-height:fit-content
+  ));
+
+  @include mat.button-overrides((
+    filled-container-color: #4054b4,
+    filled-label-text-color: white,
+    protected-container-color: #4054b4,
+    protected-label-text-color: white,
   ));
 }

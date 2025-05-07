@@ -15,11 +15,6 @@
   width: 100%;
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 5px;
-}
 
 .radio-group {
   display: flex;
@@ -54,7 +49,9 @@ mat-card {
   display: flex;
   gap: 10px;
   padding-right: 20px;
+  margin-top: 5px;
 }
+
 
 mat-card-content {
   padding: 16px;
@@ -64,7 +61,10 @@ mat-card-content {
   width: 100%;
   box-sizing:content-box; 
 }
-
+button:hover{
+  background-color: #016fe5;
+  transform: scale(1.01);
+}
 
 @media (max-width: 600px) {
   .note-row {

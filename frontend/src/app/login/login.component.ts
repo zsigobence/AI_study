@@ -7,6 +7,7 @@ import { SharedModule } from '../shared.module';
   imports: [SharedModule],
   selector: 'app-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   username = '';

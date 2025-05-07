@@ -6,7 +6,10 @@
 
 .start-content{
   background: white;
-  padding: 30px;
+  padding-inline: 35px;
+  padding-bottom: 45px;
+  padding-top: 35px;
+  border: 1px solid #ccc;
   border-radius: 20px;
   margin-top: 50px;
   display: flex;
@@ -106,6 +109,11 @@
   
   mat-form-field {
   min-width: 70%;
+}
+
+button:hover{
+  background-color: #016fe5;
+  transform: scale(1.01);
 }
 @media (max-width: 768px) {
 .questions{

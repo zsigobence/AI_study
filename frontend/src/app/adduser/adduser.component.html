@@ -1,22 +1,24 @@
 <form (ngSubmit)="onSubmit()" #userForm="ngForm">
-    <div>
-      <label for="username">Felhasználónév</label>
-      <input type="text" id="username" required [(ngModel)]="user.username" name="username" />
-    </div>
-    
-    <div>
-      <label for="password">Jelszó</label>
-      <input type="password" id="password" required [(ngModel)]="user.password" name="password" />
-    </div>
-    
-    <div>
-      <label for="role">Szerepkör</label>
-      <select id="role" required [(ngModel)]="user.role" name="role">
+    <h2>Felhasználó létrehozása</h2>
+
+    <mat-form-field>
+      <mat-label>Felhasználónév</mat-label>
+      <input matInput type="text" id="username" required [(ngModel)]="user.username" name="username">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Jelszó</mat-label>
+      <input matInput type="password" id="password" required [(ngModel)]="user.password" name="password">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Szerepkör</mat-label>
+      <select matNativeControl required [(ngModel)]="user.role" name="role">
         <option value="admin">Admin</option>
         <option value="user">User</option>
       </select>
-    </div>
+    </mat-form-field>
     
-    <button type="submit">Felhasználó hozzáadása</button>
+    <button mat-flat-button>Felhasználó hozzáadása</button>
   </form>
   

@@ -1,60 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ApiService } from '../api.service';
 import { SharedModule } from '../shared.module';
+import { EditUserDialog } from './edit-user-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-listuser',
+  standalone: true,
   imports: [SharedModule],
   templateUrl: './listuser.component.html',
   styleUrls: ['./listuser.component.css']
 })
 export class ListuserComponent {
-
   users: any[] = [];
-  selectedUser: any = null;
-  isModalOpen: boolean = false; 
 
   constructor(private apiService: ApiService) {}
-  
+
+  readonly dialog = inject(MatDialog);
+
   ngOnInit() {
     this.loadUsers();
   }
-  
+
   loadUsers() {
     this.apiService.getUsers().subscribe((data: any) => {
       this.users = data.users;
     });
   }
-  
+
   deleteUser(id: string) {
     if (confirm('Biztosan törölni szeretnéd?')) {
       this.apiService.deleteUser(id).subscribe(() => this.loadUsers());
     }
   }
-  
+
   editUser(user: any) {
-    this.selectedUser = { ...user };
-    this.isModalOpen = true;
-  }
+    const dialogRef = this.dialog.open(EditUserDialog, {
+      width: '350px',
+      data: { user: { ...user } }
+    });
 
-  closeModal() {
-    this.isModalOpen = false;
-  }
-
-  updateUser() {
-    if (this.selectedUser.username && this.selectedUser.role) {
-      this.apiService.updateUser(this.selectedUser._id, this.selectedUser).subscribe({
-        next: () => {
-          alert('Felhasználó sikeresen frissítve!');
-          this.loadUsers();
-          this.closeModal();
-        },
-        error: (err) => {
-          alert('Hiba történt a frissítés során: ' + err.error.message);
-        }
-      });
-    } else {
-      alert('Minden mezőt ki kell tölteni!');
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') {
+        this.loadUsers(); 
+      }
+    });
   }
 }

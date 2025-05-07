@@ -152,8 +152,7 @@ export class QuizComponent implements OnInit {
   finishQuiz(): void {
     clearInterval(this.timer);
     this.quizFinished = true;
+    console.log(this.quizFinished)
+    console.log(this.isStarted)
   }
-
-
-
 }

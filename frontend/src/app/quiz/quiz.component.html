@@ -49,7 +49,7 @@
     <div class="answers">
       <mat-form-field>
         <mat-label>Válasz</mat-label>
-        <textarea matInput></textarea>
+        <textarea matInput [(ngModel)]="myAnswer"></textarea>
       </mat-form-field>
       <button mat-flat-button
       (click)="answerSQSAQuestion()"

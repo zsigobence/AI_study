@@ -6,12 +6,12 @@
     <li><a href="/questions">Generált kérdések</a></li>
     <li><a href="/quiz">Kvízek</a></li>
     <li><a href="/upload">Jegyzetek feltöltése</a></li>
-    <li><a href="/adduser">Felhasználók felvitele</a></li>
-    <li><a href="/listuser">Felhasználók listázása</a></li>
+    <li *ngIf="isAdmin"><a href="/adduser">Felhasználók felvitele</a></li>
+    <li *ngIf="isAdmin"><a href="/listuser">Felhasználók listázása</a></li>
   </ul>
   
   <div class="auth-button">
     <button mat-flat-button color="primary" *ngIf="!isLoggedIn" (click)="goToLogin()" class="login-button">Bejelentkezés</button>
-    <button mat-flat-button color="primary" *ngIf="isLoggedIn" (click)="logout()" class="logout-button">Kilépés</button>
+    <button mat-flat-button *ngIf="isLoggedIn" (click)="logout()" class="logout-button">Kilépés</button>
   </div>
 </nav>

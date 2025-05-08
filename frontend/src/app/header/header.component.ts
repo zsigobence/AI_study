@@ -13,15 +13,12 @@ import { SharedModule } from '../shared.module';
 export class HeaderComponent implements OnInit {
   menuOpen = false;
   isLoggedIn = false; 
-  isAdmin = false; 
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe((status) => {
       this.isLoggedIn = status;
-      const role = this.authService.getUserRole();
-      this.isAdmin = role === 'admin';
     });
   }
 

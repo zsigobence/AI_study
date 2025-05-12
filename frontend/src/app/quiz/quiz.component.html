@@ -1,4 +1,5 @@
-<div class="start" *ngIf="!isStarted">
+
+<div class="start" *ngIf="quizState === 'notStarted'">
   <div class="start-content">
   <h2>Kvíz</h2>
   <div id="text">
@@ -17,7 +18,7 @@
     </div>
 </div> 
  
- <div class="questions" *ngIf="!quizFinished && isStarted">
+ <div class="questions" *ngIf="quizState === 'inProgress'">
   <div class="question">
     <div class="spinner-container"  *ngIf="!answerRevealed">
       <mat-progress-spinner
@@ -76,7 +77,8 @@
     </div>
   </div>
 </div>
+</div>
   
-  <div *ngIf="quizFinished && isStarted">
-    <h2>Végeredmény: {{ score }} / {{ questions.length }}</h2>
-  </div>
+<div *ngIf="quizState === 'finished'">
+  <h2>Végeredmény: {{ score }} / {{ questions.length }}</h2>
+</div>

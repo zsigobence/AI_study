@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { SharedModule } from '../shared.module'; 
 
+enum QuizState {
+  NotStarted = 'notStarted',
+  InProgress = 'inProgress',
+  Finished = 'finished'
+}
+
 @Component({
   selector: 'app-quiz',
   standalone: true,
@@ -15,14 +21,13 @@ export class QuizComponent implements OnInit {
   currentQuestionIndex: number = 0;
   correctAnswer: string = '';
   score: number = 0;
-  quizFinished: boolean = false;
   timeLeft: number = 0;
   maxTime: number = 30;
   timer: any;
   answerRevealed: boolean = false;
   answer : any[] = [];
   myAnswer : string = "";
-  isStarted : boolean = false;
+  quizState: QuizState = QuizState.NotStarted;
 
   constructor(private apiService: ApiService) {}
 
@@ -134,7 +139,7 @@ export class QuizComponent implements OnInit {
   }
 
   startQuiz(): void {
-    this.isStarted = true;
+    this.quizState = QuizState.InProgress
     this.startTimer();
   }
 
@@ -151,8 +156,10 @@ export class QuizComponent implements OnInit {
 
   finishQuiz(): void {
     clearInterval(this.timer);
-    this.quizFinished = true;
-    console.log(this.quizFinished)
-    console.log(this.isStarted)
+    this.quizState = QuizState.Finished
+    console.log(this.quizState)
+    if(this.quizState){
+      console.log(this.score + "/" + this.questions.length)
+    }
   }
 }

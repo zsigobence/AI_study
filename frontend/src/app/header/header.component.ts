@@ -26,6 +26,11 @@ export class HeaderComponent implements OnInit {
     this.menuOpen = !this.menuOpen;
   }
 
+  navigateTo(path: string) {
+  this.router.navigate([path]);
+  this.menuOpen = false; 
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/']); 

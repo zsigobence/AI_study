@@ -134,10 +134,10 @@ app.get('/users', authenticateToken, isAdmin, async (req, res) => {
 });
 
 app.put('/users/:id', authenticateToken, isAdmin, async (req, res) => {
-  const { username, password, role } = req.body;
+  const { name, password, role } = req.body;
   const updateData = {};
 
-  if (username) updateData.name = username;
+  if (name) updateData.name = name;
   if (role) updateData.role = role;
 
   if (password) {

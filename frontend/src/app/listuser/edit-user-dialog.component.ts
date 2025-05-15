@@ -11,7 +11,7 @@ import { SharedModule } from '../shared.module';
   <form>
     <mat-form-field appearance="fill">
       <mat-label>Felhasználónév</mat-label>
-      <input matInput [(ngModel)]="user.name" name="username" required>
+      <input matInput [(ngModel)]="user.name" name="name" required>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
@@ -48,7 +48,7 @@ export class EditUserDialog {
   }
 
   updateUser() {
-    if (this.user.username && this.user.role) {
+    if (this.user.name && this.user.role) {
       this.apiService.updateUser(this.user._id, this.user).subscribe({
         next: () => {
           alert('Felhasználó frissítve!');

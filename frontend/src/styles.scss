@@ -7,7 +7,7 @@ $my-theme: mat.m2-define-light-theme((
   color: (
     primary: mat.m2-define-palette(mat.$m2-indigo-palette),
     accent: mat.m2-define-palette(mat.$m2-pink-palette),
-    warn: mat.m2-define-palette(mat.$m2-red-palette),
+    warn: mat.m2-define-palette(mat.$m2-blue-palette),
     background: (
       background-color: #eaebee,
       surface: #ffffff
@@ -33,5 +33,7 @@ body {
     filled-label-text-color: white,
     protected-container-color: #4054b4,
     protected-label-text-color: white,
+    outlined-outline-color: #4054b4,
+    outlined-label-text-color: #4054b4,
   ));
 }

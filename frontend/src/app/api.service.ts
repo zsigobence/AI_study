@@ -63,17 +63,32 @@ export class ApiService {
   
 
 
-  getNotes(): Observable<any> {
-    return this.http.get(`${this.API_URL}/notes_data`);
-  }
+    getNotes() {
+    const token = this.getToken();
+    return this.http.get<any[]>(`${this.API_URL}/notes_data`, {   // itt is a backend URL kell
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+}
+
+
 
 
   uploadNote(file: File, subject: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('pdf', file);
-    formData.append('subject', subject);
-    return this.http.post(`${this.API_URL}/upload`, formData);
-  }
+  const formData = new FormData();
+  formData.append('pdf', file);
+  formData.append('subject', subject);
+
+  const token = this.getToken();
+
+  return this.http.post(`${this.API_URL}/upload`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
 
 
   deleteNote(fileName: string) {
@@ -86,37 +101,61 @@ export class ApiService {
   }
 
 
-  generateQuestions(length: number,type: string, subject: string, note?: string): Observable<any> {
-    const params = {
-      length: length,
-      type: type,
-      subject: subject,
-      note: note || '' 
-    };
-  
-    return this.http.get(`${this.API_URL}/generate_questions`, { params: params });
-  }
+generateQuestions(length: number, type: string, subject: string, note?: string): Observable<any> {
+  const params = {
+    length: length,
+    type: type,
+    subject: subject,
+    note: note || ''
+  };
+
+  const token = this.getToken();
+
+  return this.http.get(`${this.API_URL}/generate_questions`, { 
+    params: params,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
 
   saveQuestions(subject: string, note: string, newQuestions: any[]): Observable<any> {
-    return this.http.post(`${this.API_URL}/save_questions`, {
-      subject: subject,
-      note: note,
-      newQuestions: newQuestions
-    });
-  }
+  const token = this.getToken();
+  return this.http.post(`${this.API_URL}/save_questions`, {
+    subject: subject,
+    note: note,
+    newQuestions: newQuestions
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
   
   getQuestions(): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/get_questions`);
-  }
+  const token = this.getToken();
+  return this.http.get<any>(`${this.API_URL}/get_questions`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
 
+  getAnswer(question: string, answer: string): Observable<any> {
+  const token = this.getToken();
+  const params = {
+    question: question,
+    answer: answer
+  };
+  return this.http.get<any>(`${this.API_URL}/evaluate_question`, {
+    params: params,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
 
-  getAnswer( question: string, answer: string): Observable<any> {
-    const params = {
-      question: question,
-      answer: answer
-    };
-    return this.http.get<any>(`${this.API_URL}/evaluate_question`, { params: params });
-  }
 }
   
 

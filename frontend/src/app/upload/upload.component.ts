@@ -36,16 +36,17 @@ export class UploadComponent implements OnInit {
   }
 
   loadNotes(): void {
-    this.apiService.getNotes().subscribe(
-      (response) => {
-        this.notes = response.data;
-        this.onSubjectChange();
-      },
-      (error) => {
-        console.error("Hiba a jegyzetek lekérésekor:", error);
-      }
-    );
-  }
+  this.apiService.getNotes().subscribe(
+    (response) => {
+      this.notes = response;
+      this.onSubjectChange();
+    },
+    (error) => {
+      console.error("Hiba a jegyzetek lekérésekor:", error);
+    }
+  );
+}
+
 
 
   onFileSelected(event: any) {

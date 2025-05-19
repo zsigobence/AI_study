@@ -36,6 +36,7 @@ const noteSchema = new mongoose.Schema({
     required: true,
     default: false
   },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   questions: { type: Array, default: [] }
 });
 

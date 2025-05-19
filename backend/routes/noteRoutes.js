@@ -5,6 +5,8 @@ const fs = require("fs");
 const fsPromises = fs.promises;
 const multer = require("multer");
 
+const { authenticateToken, isAdmin } = require("../middleware/authMiddleware");
+
 const { NoteCollection } = require("../dbConfig");
 const {
   generateTFQuestions,
@@ -26,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Feltöltés
-router.post("/upload", upload.single("pdf"), async (req, res) => {
+router.post("/upload", authenticateToken, upload.single("pdf"), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "Nincs feltöltött fájl!" });
 
   const subjectName = req.body.subject;
@@ -36,6 +38,7 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
     filePath: req.file.path,
     filename: req.file.filename,
     size: req.file.size,
+    owner: req.user.userId,
     questions: [],
   });
 
@@ -96,12 +99,17 @@ router.get("/view_note", async (req, res) => {
 });
 
 // Kérdések generálása
-router.get("/generate_questions", async (req, res) => {
+router.get("/generate_questions", authenticateToken, async (req, res) => {
   try {
     const { type, subject, note } = req.query;
-    const text = await processPdf(req.query, res);
-    let questions;
+    const userId = req.user.userId;
 
+    const noteDoc = await NoteCollection.findOne({ subject, title: note, owner: userId });
+    if (!noteDoc) return res.status(404).json({ error: "Jegyzet nem található vagy nem a tiéd!" });
+
+    const text = await processPdf(req.query, res);
+
+    let questions;
     if (type === "TF") {
       questions = await generateTFQuestions(req.query, text);
     } else if (type === "SQSA") {
@@ -116,21 +124,28 @@ router.get("/generate_questions", async (req, res) => {
   }
 });
 
+
 // Jegyzetek + kérdések lekérdezése
-router.get("/notes_data", async (req, res) => {
+router.get('/notes_data', authenticateToken, async (req, res) => {
   try {
-    const data = await NoteCollection.find({});
-    res.json({ success: true, data });
+    const userId = req.user.userId;  // Ez az ID, amit a tokenből kinyersz az auth middleware-ben
+    let notes;
+      notes = await NoteCollection.find({ owner: userId }); // user csak a saját fájljait látja
+    res.json(notes);
   } catch (err) {
-    res.status(500).json({ success: false, message: "Lekérdezési hiba", error: err });
+    res.status(500).json({ message: 'Hiba a jegyzetek lekérésekor.' });
   }
 });
 
+
 // Aktív jegyzet kérdései
-router.get("/get_questions", async (req, res) => {
+router.get("/get_questions", authenticateToken, async (req, res) => {
   try {
-    const noteData = await NoteCollection.findOne({ isActive: true });
-    if (!noteData?.questions?.length) return res.status(404).json({ error: "Nincsenek mentett kérdések!" });
+    const userId = req.user.userId;
+
+    const noteData = await NoteCollection.findOne({ isActive: true, owner: userId });
+    if (!noteData?.questions?.length)
+      return res.status(404).json({ error: "Nincsenek mentett kérdések vagy nincs aktív jegyzet!" });
 
     res.json({ questions: noteData.questions });
   } catch {
@@ -138,10 +153,13 @@ router.get("/get_questions", async (req, res) => {
   }
 });
 
+
 // Kérdés értékelése
-router.get("/evaluate_question", async (req, res) => {
+router.get("/evaluate_question", authenticateToken, async (req, res) => {
   try {
-    const noteData = await NoteCollection.findOne({ isActive: true });
+    const noteData = await NoteCollection.findOne({ isActive: true, owner: req.user.userId });
+    if (!noteData) return res.status(404).json({ error: "Nincs aktív jegyzet ennél a felhasználónál!" });
+
     const text = await processPdf({ subject: noteData.subject, note: noteData.title }, res);
     const answer = await evaluate_question(req.query, text);
     res.json({ answer });
@@ -150,30 +168,36 @@ router.get("/evaluate_question", async (req, res) => {
   }
 });
 
+
 // Kérdések mentése jegyzethez
-router.post("/save_questions", async (req, res) => {
+router.post("/save_questions", authenticateToken, async (req, res) => {
   const { subject, note, newQuestions } = req.body;
-  if (!subject || !newQuestions || !Array.isArray(newQuestions)) {
+  const userId = req.user.userId;
+
+  if (!subject || !note || !Array.isArray(newQuestions)) {
     return res.status(400).json({ error: "Hiányzó adatok vagy hibás formátum!" });
   }
 
   try {
-    await NoteCollection.updateMany({}, { $set: { isActive: false } });
+    // Csak ennek a felhasználónak a jegyzetei legyenek inaktívak
+    await NoteCollection.updateMany({ owner: userId }, { $set: { isActive: false } });
 
-    let noteData = await NoteCollection.findOne({ subject, title: note });
+    let noteData = await NoteCollection.findOne({ subject, title: note, owner: userId });
 
     if (!noteData) {
-      noteData = new NoteCollection({ title: note, subject, questions: newQuestions, isActive: true });
-    } else {
-      noteData.questions = newQuestions;
-      noteData.isActive = true;
+      return res.status(404).json({ error: "Jegyzet nem található vagy nem a tiéd!" });
     }
+
+    noteData.questions = newQuestions;
+    noteData.isActive = true;
 
     await noteData.save();
     res.json({ success: true, message: "Kérdések sikeresen mentve!" });
-  } catch {
+  } catch (error) {
+    console.error("Mentési hiba:", error);
     res.status(500).json({ error: "Mentési hiba!" });
   }
 });
+
 
 module.exports = router;

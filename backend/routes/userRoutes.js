@@ -7,7 +7,8 @@ const {
   addUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserRoleById,
 } = require("../functions/userFunctions");
 
 const { authenticateToken, isAdmin } = require("../middleware/authMiddleware");
@@ -70,5 +71,22 @@ router.delete("/users/:id", authenticateToken, isAdmin, async (req, res) => {
     res.status(500).json({ success: false, message: "Hiba a törlés során!" });
   }
 });
+
+
+router.get("/user-role", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;  // ez a tokenből jön, nem az adatbázisból
+    const result = await getUserRoleById(userId);
+    if (result.error) {
+      return res.status(404).json({ message: result.error });
+    }
+    res.json({ role: result.role });
+  } catch (err) {
+    console.error("Hiba a /user-role végpontban:", err);
+    res.status(500).json({ message: "Hiba történt a szerepkör lekérésekor." });
+  }
+});
+
+
 
 module.exports = router;

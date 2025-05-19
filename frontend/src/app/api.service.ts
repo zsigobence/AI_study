@@ -23,6 +23,15 @@ export class ApiService {
     return localStorage.getItem('token') || '';
   }
   
+  getUserRole() {
+  const token = this.getToken();
+  return this.http.get<{ role: string }>(`${this.API_URL}/user-role`, {
+    headers: new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    })
+  });
+}
+
 
   getUsers() {
     const token = this.getToken();

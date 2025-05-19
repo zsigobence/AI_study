@@ -55,6 +55,14 @@ async function deleteUser(id) {
   return await UserCollection.findByIdAndDelete(id);
 }
 
+async function getUserRoleById(id) {
+  const user = await UserCollection.findById(id, "role");
+  if (!user) {
+    return { error: "User not found" };
+  }
+  return { role: user.role };
+}
+
 module.exports = {
   createDefaultAdmin,
   loginUser,
@@ -62,4 +70,5 @@ module.exports = {
   getAllUsers,
   updateUser,
   deleteUser,
+  getUserRoleById
 };

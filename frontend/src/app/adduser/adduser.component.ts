@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
 import { SharedModule } from '../shared.module';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [SharedModule],
@@ -16,7 +17,26 @@ export class AdduserComponent {
     password: '',
     role: 'user'
   };
-  constructor(private apiService: ApiService, private authService: AuthService) {}
+  constructor(private apiService: ApiService, private authService: AuthService, 
+              private router: Router  
+  ) {}
+
+  ngOnInit() {
+      this.apiService.getUserRole().subscribe({
+        next: (data) => {
+          console.log(data);
+          if (data.role !== 'admin') {
+            alert('Nincs jogosultságod az oldal megtekintéséhez!');
+            this.router.navigate(['/login']);
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Nem sikerült ellenőrizni a jogosultságot.');
+          this.router.navigate(['/login']);
+        }
+      });
+    }
 
   onSubmit() {
     const token = this.authService.getToken();

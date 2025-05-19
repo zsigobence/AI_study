@@ -3,13 +3,21 @@
     &#9776;
   </div>
   <ul class="nav-links" [class.active]="menuOpen">
-<li><button mat-stroked-button class="header-button" (click)="navigateTo('/questions')">Generált kérdések</button></li>
-<li><button mat-stroked-button class="header-button" (click)="navigateTo('/quiz')">Kvízek</button></li>
-<li><button mat-stroked-button class="header-button" (click)="navigateTo('/upload')">Jegyzetek feltöltése</button></li>
-<li><button mat-stroked-button class="header-button" (click)="navigateTo('/adduser')">Felhasználók felvitele</button></li>
-<li><button mat-stroked-button class="header-button" (click)="navigateTo('/listuser')">Felhasználók listázása</button></li>
-
-    
+    <li *ngIf="isLoggedIn && canAccess()">
+      <button mat-stroked-button class="header-button" (click)="navigateTo('/questions')">Generált kérdések</button>
+    </li>
+    <li *ngIf="isLoggedIn && canAccess()">
+      <button mat-stroked-button class="header-button" (click)="navigateTo('/quiz')">Kvízek</button>
+    </li>
+    <li *ngIf="isLoggedIn && canAccess()">
+      <button mat-stroked-button class="header-button" (click)="navigateTo('/upload')">Jegyzetek feltöltése</button>
+    </li>
+    <li *ngIf="isLoggedIn && userRole === 'admin'">
+      <button mat-stroked-button class="header-button" (click)="navigateTo('/adduser')">Felhasználók felvitele</button>
+    </li>
+    <li *ngIf="isLoggedIn && userRole === 'admin'">
+      <button mat-stroked-button class="header-button" (click)="navigateTo('/listuser')">Felhasználók listázása</button>
+    </li>
   </ul>
   
   <div class="auth-button">

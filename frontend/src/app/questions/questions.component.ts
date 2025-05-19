@@ -11,13 +11,43 @@ import { SharedModule } from '../shared.module';
 })
 export class QuestionsComponent {
   questions: any[] = [];
+  notes: any[] = [];  
+  selectedSubject: string = "";
+  selectedNote: string = "";
+  filteredNotes: any[] = [];
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
+    this.loadNotes();
     this.getQuestions();
+    this.onSubjectChange();
   }
 
+  loadNotes(): void {
+  this.apiService.getNotes().subscribe(
+    (response) => {
+      this.notes = response;
+      this.onSubjectChange();
+    },
+    (error) => {
+      console.error("Hiba a jegyzetek lekérésekor:", error);
+    }
+  );
+}
+
+
+  changeActiveQuestions(): void {
+    this.apiService.changeQuestions(this.selectedNote).subscribe(
+      (response) => {
+        console.log("Kérdések frissítve")
+        this.getQuestions();
+      },
+      (error) => {
+        console.error('Hiba történt a kérdés frissítésekor:', error);
+      }
+    );
+  }
 
   getQuestions(): void {
     this.apiService.getQuestions().subscribe(
@@ -32,6 +62,19 @@ export class QuestionsComponent {
         console.error('Hiba történt a kérdések lekérésekor:', error);
       }
     );
+  }
+
+    getUniqueSubjects(): string[] {
+    return [...new Set(this.notes.map(note => note.subject))];
+  }
+
+  
+  onSubjectChange(): void {
+    if (this.selectedSubject) {
+      this.filteredNotes = this.notes.filter(note => note.subject === this.selectedSubject && note.questions.length > 0);
+    } else {
+      this.filteredNotes = []; 
+    }
   }
 
 }

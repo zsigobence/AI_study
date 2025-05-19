@@ -1,0 +1,34 @@
+
+
+.selector{
+  display: flex;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  padding: 20px;
+  gap: clamp(1px, 5vw, 50px);
+}
+
+.selector mat-form-field{
+  width: 100%;
+min-width: 150px;
+max-width: 350px;
+}
+
+.selector button{
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 16px !important;
+  font-family: 'Arial', sans-serif !important;
+}
+
+.selector button:hover{
+  background-color: #161e47 !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+
+
+
+

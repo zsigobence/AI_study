@@ -143,6 +143,20 @@ generateQuestions(length: number, type: string, subject: string, note?: string):
   });
 }
 
+  changeQuestions(note: string): Observable<any> {
+  const token = this.getToken();
+  const params = {
+    note: note
+  };
+  return this.http.post<any>(`${this.API_URL}/change_questions`, {
+    note: note
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
   getAnswer(question: string, answer: string): Observable<any> {
   const token = this.getToken();
   const params = {

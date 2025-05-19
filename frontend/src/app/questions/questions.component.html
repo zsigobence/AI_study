@@ -1,4 +1,26 @@
 <div>
+
+  <div class="selector">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Tantárgy</mat-label>
+          <mat-select [(ngModel)]="selectedSubject" (selectionChange)="onSubjectChange()">
+            <mat-option *ngFor="let subject of getUniqueSubjects()" [value]="subject">{{ subject }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Jegyzet</mat-label>
+          <mat-select [(ngModel)]="selectedNote">
+            <mat-option value="">Egyik sem</mat-option>
+            <mat-option *ngFor="let note of filteredNotes" [value]="note.title">{{ note.title }} <p *ngIf="note.isActive"> (Aktív)</p></mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button (click)="changeActiveQuestions()">Kiválasztás</button>
+
+  </div>
+
+
   <h2>Kérdések listája</h2>
 
   <div *ngIf="questions.length > 0">

@@ -200,4 +200,34 @@ router.post("/save_questions", authenticateToken, async (req, res) => {
 });
 
 
+// Aktív jegyzet változtatása
+router.post("/change_questions", authenticateToken, async (req, res) => {
+  const {note } = req.body;
+  const userId = req.user.userId;
+
+  if ( !note) {
+    return res.status(400).json({ error: "Hiányzó adat!" });
+  }
+
+  try {
+    // Csak ennek a felhasználónak a jegyzetei legyenek inaktívak
+    await NoteCollection.updateMany({ owner: userId }, { $set: { isActive: false } });
+
+    let noteData = await NoteCollection.findOne({ title: note, owner: userId });
+
+    if (!noteData) {
+      return res.status(404).json({ error: "Jegyzet nem található vagy nem a tiéd!" });
+    }
+
+    noteData.isActive = true;
+
+    await noteData.save();
+    res.json({ success: true, message: "Aktív érdések sikeresen frissítve!" });
+  } catch (error) {
+    console.error("Mentési hiba:", error);
+    res.status(500).json({ error: "Mentési hiba!" });
+  }
+});
+
+
 module.exports = router;

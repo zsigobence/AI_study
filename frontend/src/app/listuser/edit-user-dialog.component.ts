@@ -14,6 +14,17 @@ import { SharedModule } from '../shared.module';
       <input matInput [(ngModel)]="user.name" name="name" required>
     </mat-form-field>
 
+        <mat-form-field appearance="fill">
+      <mat-label>Teljes név</mat-label>
+      <input matInput [(ngModel)]="user.fullname" name="fullname" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" [(ngModel)]="user.email" name="email" required>
+    </mat-form-field>
+
+
     <mat-form-field appearance="fill">
       <mat-label>Szerepkör</mat-label>
       <mat-select [(ngModel)]="user.role" name="role" required>
@@ -48,20 +59,27 @@ export class EditUserDialog {
   }
 
   updateUser() {
-    if (this.user.name && this.user.role) {
-      this.apiService.updateUser(this.user._id, this.user).subscribe({
-        next: () => {
-          alert('Felhasználó frissítve!');
-          this.dialogRef.close('updated');
-        },
-        error: (err) => {
-          alert('Hiba történt: ' + err.error.message);
-        }
-      });
-    } else {
-      alert('Minden mezőt ki kell tölteni!');
-    }
+  if (this.user.name && this.user.role && this.user.fullname && this.user.email) {
+    const updateData: any = {
+      name: this.user.name,
+      fullname: this.user.fullname,
+      email: this.user.email,
+      role: this.user.role
+    };
+    this.apiService.updateUser(this.user._id, updateData).subscribe({
+      next: () => {
+        alert('Felhasználó frissítve!');
+        this.dialogRef.close('updated');
+      },
+      error: (err) => {
+        alert('Hiba történt: ' + err.error.message);
+      }
+    });
+  } else {
+    alert('Minden mezőt ki kell tölteni!');
   }
+}
+
 
   cancel() {
     this.dialogRef.close();

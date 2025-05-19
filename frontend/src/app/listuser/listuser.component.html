@@ -3,14 +3,18 @@
   <thead>
     <tr>
       <th>Felhasználónév</th>
+      <th>Teljes név</th>
       <th>Szerepkör</th>
+      <th>Email</th>
       <th>Műveletek</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let user of users">
       <td>{{ user.name }}</td>
+      <td>{{ user.fullname }}</td>
       <td>{{ user.role }}</td>
+      <td>{{ user.email }}</td>
       <td>
         <div class="buttons">
         <button mat-flat-button (click)="editUser(user)">Szerkeszt</button>

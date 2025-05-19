@@ -2,14 +2,26 @@
     <h2>Felhasználó létrehozása</h2>
 
     <mat-form-field>
-      <mat-label>Felhasználónév</mat-label>
-      <input matInput type="text" id="username" required [(ngModel)]="user.username" name="username">
-    </mat-form-field>
+  <mat-label>Felhasználónév</mat-label>
+  <input matInput type="text" id="name" required [(ngModel)]="user.name" name="name">
+</mat-form-field>
+
 
     <mat-form-field>
       <mat-label>Jelszó</mat-label>
       <input matInput type="password" id="password" required [(ngModel)]="user.password" name="password">
     </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teljes név</mat-label>
+      <input matInput type="text" id="fullname" required [(ngModel)]="user.fullname" name="fullname">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" id="email" required [(ngModel)]="user.email" name="email">
+    </mat-form-field>
+
 
     <mat-form-field>
       <mat-label>Szerepkör</mat-label>

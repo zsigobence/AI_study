@@ -9,6 +9,8 @@ async function createDefaultAdmin() {
     const hashedPassword = await bcrypt.hash("admin123", 10);
     const admin = new UserCollection({
       name: "admin",
+      fullname: "Admin User",
+      email: "random@mail.com",
       password: hashedPassword,
       role: "admin",
     });
@@ -30,26 +32,38 @@ async function loginUser(username, password) {
   return { token };
 }
 
-async function addUser(username, password, role) {
-  const existingUser = await UserCollection.findOne({ name: username });
+async function addUser(name, fullname, email, password, role) {
+  const existingUser = await UserCollection.findOne({ name });
   if (existingUser) return { error: "User already exists!" };
 
+  const existingEmail = await UserCollection.findOne({ email });
+  if (existingEmail) return { error: "Email already in use!" };
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new UserCollection({ name: username, password: hashedPassword, role });
+  const newUser = new UserCollection({ name, fullname, email, password: hashedPassword, role });
   await newUser.save();
   return { message: "User successfully added!" };
 }
+
 
 async function getAllUsers() {
   return await UserCollection.find({}, "-password");
 }
 
-async function updateUser(id, name, password, role) {
-  const updateData = { ...(name && { name }), ...(role && { role }) };
-  if (password) updateData.password = await bcrypt.hash(password, 10);
+async function updateUser(id, name, fullname, email, password, role) {
+  const updateData = {
+    ...(name && { name }),
+    ...(fullname && { fullname }),
+    ...(email && { email }),
+    ...(role && { role }),
+  };
+  if (password) {
+    updateData.password = await bcrypt.hash(password, 10);
+  }
 
   return await UserCollection.findByIdAndUpdate(id, updateData, { new: true });
 }
+
 
 async function deleteUser(id) {
   return await UserCollection.findByIdAndDelete(id);

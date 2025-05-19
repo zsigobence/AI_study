@@ -10,14 +10,15 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
   
-  addUser(data: any) {
-    const token = this.getToken();
-    return this.http.post(`${this.API_URL}/add_user`, data, {
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-    });
-  }
+  addUser(data: { name: string; fullname: string; email: string; password: string; role: string }) {
+  const token = this.getToken();
+  return this.http.post(`${this.API_URL}/add_user`, data, {
+    headers: new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    })
+  });
+}
+
 
   private getToken(): string {
     return localStorage.getItem('token') || '';
@@ -52,15 +53,15 @@ export class ApiService {
   }
   
 
-  updateUser(id: string, data: any) {
-    const token = this.getToken();
-    return this.http.put(`${this.API_URL}/users/${id}`, data, {
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-    });
-  }
-  
+  updateUser(id: string, data: { name?: string; fullname?: string; email?: string; password?: string; role?: string }) {
+  const token = this.getToken();
+  return this.http.put(`${this.API_URL}/users/${id}`, data, {
+    headers: new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    })
+  });
+}
+
 
 
     getNotes() {

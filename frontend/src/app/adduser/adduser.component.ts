@@ -13,10 +13,14 @@ import { Router } from '@angular/router';
 export class AdduserComponent {
 
   user = {
-    username: '',
-    password: '',
-    role: 'user'
-  };
+  name: '',       // username helyett name
+  fullname: '',
+  email: '',
+  password: '',
+  role: 'user'
+};
+
+
   constructor(private apiService: ApiService, private authService: AuthService, 
               private router: Router  
   ) {}
@@ -39,15 +43,14 @@ export class AdduserComponent {
     }
 
   onSubmit() {
-    const token = this.authService.getToken();
-    console.log(localStorage)
-    if (this.user.username && this.user.password && this.user.role) {
-      this.apiService.addUser(this.user).subscribe({
-        next: () => alert('Felhasználó sikeresen hozzáadva!'),
-        error: (err) => alert('Hiba történt: ' + err.error.message)
-      });
-    } else {
-      alert('Kérjük, töltsd ki az összes mezőt!');
-    }
+  if (this.user.name && this.user.fullname && this.user.email && this.user.password && this.user.role) {
+    this.apiService.addUser(this.user).subscribe({
+      next: () => alert('Felhasználó sikeresen hozzáadva!'),
+      error: (err) => alert('Hiba történt: ' + err.error.message)
+    });
+  } else {
+    alert('Kérjük, töltsd ki az összes mezőt!');
   }
+}
+
 }

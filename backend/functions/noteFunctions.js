@@ -1,7 +1,9 @@
 const path = require("path");
 const fs = require("fs");
+const fsPromises = require("fs").promises;
+const pdfParse = require("pdf-parse");
 
-const uploadDir = path.join(__dirname, "notes");
+const uploadDir = path.join(__dirname, "..", "notes");
 
 // Mappa létrehozása, ha nem létezik
 function ensureDirectoryExists() {
@@ -34,4 +36,37 @@ try {
 
 }
 
-module.exports = { saveFile, ensureDirectoryExists };
+// PDF fájl szövegének kiolvasása
+async function processPdf(data) {
+  const subject = data.subject;
+  const note = data.note;
+  let text = "";
+
+  if (subject !== "") {
+    const pdfPath = path.join(__dirname, "..", "notes", note);
+    try {
+      await fsPromises.access(pdfPath);
+    } catch (error) {
+      console.log(`A fájl nem található: ${pdfPath}`);
+      return { error: "Fájl nem található!" };
+    }
+
+    try {
+      const fileBuffer = await fsPromises.readFile(pdfPath);
+      const parsed = await pdfParse(fileBuffer);
+      text = parsed.text;
+    } catch (error) {
+      console.error("Hiba a fájl feldolgozása közben:", error);
+      return { error: "PDF feldolgozási hiba!" };
+    }
+  }
+
+  return text;
+}
+
+
+module.exports = {
+  ensureDirectoryExists,
+  saveFile,
+  processPdf,
+};

@@ -13,7 +13,6 @@ const {
 
 const { authenticateToken, isAdmin } = require("../middleware/authMiddleware");
 
-// Alap admin létrehozása induláskor
 createDefaultAdmin();
 
 // LOGIN
@@ -77,7 +76,7 @@ router.delete("/users/:id", authenticateToken, isAdmin, async (req, res) => {
 
 router.get("/user-role", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;  // ez a tokenből jön, nem az adatbázisból
+    const userId = req.user.userId;
     const result = await getUserRoleById(userId);
     if (result.error) {
       return res.status(404).json({ message: result.error });

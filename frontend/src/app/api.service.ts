@@ -66,7 +66,7 @@ export class ApiService {
 
     getNotes() {
     const token = this.getToken();
-    return this.http.get<any[]>(`${this.API_URL}/notes_data`, {   // itt is a backend URL kell
+    return this.http.get<any[]>(`${this.API_URL}/notes_data`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

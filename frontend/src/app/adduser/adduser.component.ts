@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class AdduserComponent {
 
   user = {
-  name: '',       // username helyett name
+  name: '',
   fullname: '',
   email: '',
   password: '',

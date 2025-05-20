@@ -128,9 +128,9 @@ router.get("/generate_questions", authenticateToken, async (req, res) => {
 // Jegyzetek + kérdések lekérdezése
 router.get('/notes_data', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;  // Ez az ID, amit a tokenből kinyersz az auth middleware-ben
+    const userId = req.user.userId;
     let notes;
-      notes = await NoteCollection.find({ owner: userId }); // user csak a saját fájljait látja
+      notes = await NoteCollection.find({ owner: userId });
     res.json(notes);
   } catch (err) {
     res.status(500).json({ message: 'Hiba a jegyzetek lekérésekor.' });
@@ -179,7 +179,6 @@ router.post("/save_questions", authenticateToken, async (req, res) => {
   }
 
   try {
-    // Csak ennek a felhasználónak a jegyzetei legyenek inaktívak
     await NoteCollection.updateMany({ owner: userId }, { $set: { isActive: false } });
 
     let noteData = await NoteCollection.findOne({ subject, title: note, owner: userId });
@@ -210,7 +209,6 @@ router.post("/change_questions", authenticateToken, async (req, res) => {
   }
 
   try {
-    // Csak ennek a felhasználónak a jegyzetei legyenek inaktívak
     await NoteCollection.updateMany({ owner: userId }, { $set: { isActive: false } });
 
     let noteData = await NoteCollection.findOne({ title: note, owner: userId });
